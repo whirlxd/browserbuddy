@@ -47,6 +47,29 @@ import Layout from "../layouts/Layout.astro";
 			<button type="submit">Sign Up For The Grant</button>
 		</form>
 	</main>
+
+	<div>
+	   <h2>How does it work?</h2>
+		<ol>
+		<li>Brainstorm on your idea</li>
+		<li>Develop your extension</li>
+		<li>Publish the source code of your extension on GitHub</li>
+		<li>Iterate & Submit your work for review</li>
+		<li>Publish your extension on the Chrome Web Store</li>
+		</ol>
+
+		<h3>Requirements</h3>
+		<ul>
+		  <ul>The extension must be unique and solve a problem or do something reasonably useful.</ul>
+		  <li>The extension must have been tested by at least 10 users.</li>
+		  <li>The source code of your extension must be open-source.</li>
+		  <li>The extension must work properly in both Chrome-based browsers and Firefox.</li>
+		</ul>
+	</div>
+
+	<footer>
+
+	</footer>
 </Layout>
 
 <script>
@@ -97,12 +120,17 @@ import Layout from "../layouts/Layout.astro";
 	   padding: 1rem;
 		font-size: 1.2rem;
 	}
+
 	main form input {
 		/* padding: 0.5rem; */
 		border-radius: 0.5rem;
 		border: 3px solid #ff8000;
 		width: 50%;
 		font-size: 1
+	}
+
+	main form button:focus {
+	   transform: scale(0.5);
 	}
 
 	input:focus {
