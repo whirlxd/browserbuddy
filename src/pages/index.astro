@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Footer from "../components/footer.astro";
 ---
 
 <Layout title="WebForge - Build your own Browser extension">
@@ -35,13 +34,14 @@ import Footer from "../components/footer.astro";
 			</div>
 			<div>
 				<h1>WebForge</h1>
-				<h2>Develop a browser extension, <br> Get a grant to ship it to the Chrome Web Store</h2>
+				<h2>
+					Develop a browser extension, <br /> Get a grant to ship it to
+					the Chrome Web Store
+				</h2>
 			</div>
 		</div>
 		<div>
-		  <p>
-
-		  </p>
+			<p></p>
 		</div>
 		<form>
 			<input type="text" placeholder="josias@hackclub.com" name="email" />
@@ -49,37 +49,56 @@ import Footer from "../components/footer.astro";
 		</form>
 	</main>
 
-	<div>
-	   <h2>How does it work?</h2>
+	<div class="info">
+		<h2>How does it work?</h2>
 		<ol>
-		<li>Brainstorm on your idea</li>
-		<li>Develop your extension</li>
-		<li>Publish the source code of your extension on GitHub</li>
-		<li>Iterate & Submit your work for review</li>
-		<li>Publish your extension on the Chrome Web Store</li>
+			<li>Brainstorm on your idea</li>
+			<li>Develop your extension</li>
+			<li>Publish the source code of your extension on GitHub</li>
+			<li>Iterate & Submit your work for review</li>
+			<li>Publish your extension on the Chrome Web Store</li>
 		</ol>
 
-		<h3>Requirements</h3>
+		<h2>Requirements</h2>
 		<ul>
-		  <ul>The extension must be unique and solve a problem or do something reasonably useful.</ul>
-		  <li>The extension must have been tested by at least 10 users.</li>
-		  <li>The source code of your extension must be open-source.</li>
-		  <li>The extension must work properly in both Chrome-based browsers and Firefox.</li>
+			<li>
+				The extension must be unique and solve a problem or do something
+				reasonably useful.
+			</li>
+			<li>The extension must have been tested by at least 10 users.</li>
+			<li>The source code of your extension must be open-source.</li>
+			<li>
+				The extension must work properly in both Chrome-based browsers
+				and Firefox.
+			</li>
+		</ul>
+
+		<h2>Frequently Asked Questions</h2>
+		<ul class="faq">
+			<li>
+				The extension must be unique and solve a problem or do something
+				reasonably useful.
+			</li>
+			<li>The extension must have been tested by at least 10 users.</li>
+			<li>The source code of your extension must be open-source.</li>
+			<li>
+				The extension must work properly in both Chrome-based browsers
+				and Firefox.
+			</li>
 		</ul>
 	</div>
-	<Footer />
 </Layout>
 
 <script>
-  const form = document.getElementsByTagName("form")[0];
-  form.addEventListener("submit", (e) => e.preventDefault());
+	const form = document.getElementsByTagName("form")[0];
+	form.addEventListener("submit", (e) => e.preventDefault());
 </script>
 
 <style>
 	main {
 		margin: auto;
 		padding: 1rem;
-		width: 800px;
+		width: 70%;
 		max-width: calc(100% - 2rem);
 		height: 100vh;
 		font-size: 20px;
@@ -106,16 +125,20 @@ import Footer from "../components/footer.astro";
 	}
 
 	main form {
-	    width: 100%;
+		width: 100%;
+		max-width: 800px;
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 	}
 
-	main form * { margin: 0.5rem; }
+	main form * {
+		margin: 0.5rem;
+	}
 
-	main form input, main form button {
-	   padding: 1rem;
+	main form input,
+	main form button {
+		padding: 1rem;
 		font-size: 1.2rem;
 	}
 
@@ -124,11 +147,11 @@ import Footer from "../components/footer.astro";
 		border-radius: 0.5rem;
 		border: 3px solid #ff8000;
 		width: 50%;
-		font-size: 1
+		font-size: 1;
 	}
 
 	main form button:focus {
-	   transform: scale(0.5);
+		transform: scale(0.5);
 	}
 
 	input:focus {
@@ -146,7 +169,20 @@ import Footer from "../components/footer.astro";
 
 	.cta {
 		display: flex;
-		justify-content: center;;
+		justify-content: center;
 		align-items: center;
+	}
+
+	.info {
+		width: 100%;
+		font-size: 1.6rem;
+		/* display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		*/
+	}
+
+	.faq {
+		list-style-type: "? - ";
 	}
 </style>
