@@ -2,50 +2,27 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="WebForge - Build your own Browser extension">
+<Layout title="BrowserBuddy - Build your own Browser extension">
 	<main>
-		<div class="cta">
-			<div class="browsers">
-				<img
-					src="/browsers/firefox_icon.png"
-					alt="firefox logo"
-					width="150"
-					height="150"
-				/>
-				<img
-					src="/browsers/edge_icon.png"
-					alt="edge logo"
-					width="150"
-					height="150"
-				/>
-				<img
-					src="/browsers/chrome_icon.png"
-					alt="chrome logo"
-					width="150"
-					height="150"
-				/>
-				<!-- <a href="https://www.flaticon.com/free-icons/extension" title="extension icons">Extension icons created by Karacis - Flaticon</a> -->
-				<img
-					src="/extension.png"
-					alt="extension"
-					width="150"
-					height="150"
-				/>
-			</div>
-			<div>
-				<h1>WebForge</h1>
-				<h2>
-					Develop a browser extension, <br /> Get a grant to ship it to
-					the Chrome Web Store
-				</h2>
-			</div>
+		<div class="cta-item-container hammer">
+			<img class="cta-icons" id="hammer" src="/hammer.png" alt="" />
 		</div>
-		<div>
-			<p></p>
+		<div class="cta-text">
+			<h1>BrowserBuddy</h1>
+			<h2>Develop a browser extension</h2>
+			<h2>Ship it to the Chrome Web Store</h2>
 		</div>
+		<div class="cta-item-container cursor">
+			<img
+				class="cta-icons"
+				src="https://media3.giphy.com/media/J5dm29T4xgwyEnUYYc/giphy.webp"
+				alt="cursor-click"
+			/>
+		</div>
+
 		<form>
-			<input type="text" placeholder="josias@hackclub.com" name="email" />
-			<button type="submit">Sign Up For The Grant</button>
+			<input type="email" placeholder="josias@hackclub.com" />
+			<button type="submit">Let's go!</button>
 		</form>
 	</main>
 
@@ -97,26 +74,102 @@ import Layout from "../layouts/Layout.astro";
 <style>
 	main {
 		margin: auto;
-		padding: 1rem;
-		width: 70%;
+		padding: 0.5rem;
+		width: 60%;
 		max-width: calc(100% - 2rem);
 		height: 100vh;
 		font-size: 20px;
-		line-height: 2;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-evenly;
 		align-items: center;
 	}
 
-	main h1 {
-		font-size: 6rem;
-		font-family: "Tiny5", sans-serif;
-		color: #ff8000;
+	.cta-text {
+		width: 100%;
+		height: fit-content;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 
-	main div {
-		line-height: 3rem;
+	.cta-text h2 {
+		font-size: 4rem;
+		color: white;
+		padding: 0.2rem 1.5rem;
+		transform: rotate(-4deg);
+		margin: 0;
+		background-color: #33d6a6;
+		z-index: 1;
+	}
+
+	main div.cta-text:last-child {
+		transform: rotate(-3deg);
+	}
+
+	main h1 {
+		font-size: 6rem;
+		/* font-family: "Tiny5", sans-serif; */
+		/* font-family: "DepartureMono", sans-serif; */
+		/* color: #ff8000; */
+		color: white;
+		padding: 0.2rem 1.5rem;
+		transform: rotate(5deg);
+		margin: 0 0 2rem 0;
+		background-color: #ec3750;
+		z-index: 2;
+	}
+
+	main .cta-item-container {
+		position: relative;
+		display: flex;
+		/* justify-content: space-between; */
+		width: 100%;
+	}
+
+	.hammer {
+		top: 10%;
+		justify-content: flex-start;
+		align-items: flex-start;
+	}
+
+	#hammer {
+		animation-name: hammer-hit;
+		animation-timing-function: ease-in-out;
+		animation-duration: 0.8s;
+		animation-delay: 0.5s;
+		animation-iteration-count: infinite;
+		animation-direction: forwards;
+	}
+
+	@keyframes hammer-hit {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		25% {
+			transform: rotate(-20deg);
+		}
+
+		50% {
+			transform: rotate(0deg);
+		}
+
+		75% {
+			transform: rotate(20deg);
+		}
+		
+		100% {
+			transform: rotate(0deg);
+		}
+	}
+
+	.cursor {
+		top: -18%;
+		right: 5%;
+		justify-content: flex-end;
+		align-items: flex-end;
+		z-index: 2;
 	}
 
 	main div .browsers {
@@ -143,15 +196,24 @@ import Layout from "../layouts/Layout.astro";
 	}
 
 	main form input {
-		/* padding: 0.5rem; */
+		font-weight: bold;
+		background: transparent;
 		border-radius: 0.5rem;
-		border: 3px solid #ff8000;
-		width: 50%;
+		border: 3px solid var(--hc-red);
+		width: 70%;
 		font-size: 1;
+	}
+
+	main form button {
+		width: 30%;
 	}
 
 	main form button:focus {
 		transform: scale(0.5);
+	}
+
+	main .cta-icons {
+		width: 15%;
 	}
 
 	input:focus {
@@ -159,11 +221,11 @@ import Layout from "../layouts/Layout.astro";
 	}
 
 	button {
-		/* padding: 0.5rem; */
+		color: white;
 		border-radius: 0.5rem;
-		border: 2px solid #ff8000;
+		border: 2px solid var(--hc-red);
 		font-size: 1;
-		background-color: #ff8000;
+		background-color: var(--hc-red);
 		font-weight: bold;
 	}
 

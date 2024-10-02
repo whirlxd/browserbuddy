@@ -98,10 +98,19 @@ const { title } = Astro.props;
 </html>
 <style is:global>
 	@import url("https://fonts.googleapis.com/css2?family=Tiny5&display=swap");
+
+	/* VC Garamond Font */
 	@font-face {
 		font-family: "VC Garamond";
 		src: url("/VCGaramond.otf");
 	}
+
+	/* Departure Mono */
+	@font-face {
+	   font-family: "DepartureMono";
+	   src: url("/DepartureMono-Regular.otf");
+	}
+
 	:root {
 		--accent: 136, 58, 234;
 		--accent-light: 224, 204, 250;
@@ -112,6 +121,8 @@ const { title } = Astro.props;
 			rgb(var(--accent-light)) 30%,
 			white 60%
 		);
+		--hc-red: #ec3750;
+		--hc-green: #33d6a6;
 	}
 	html {
 		font-family: system-ui, sans-serif;
@@ -138,8 +149,8 @@ const { title } = Astro.props;
 					transparent
 				)
 				25px 25px,
-			linear-gradient(#ff80004a 2px, transparent 2px) 0 -1px,
-			linear-gradient(90deg, #ff80004a 2px, white 2px) -1px 0;
+			linear-gradient(#ec37504a 2px, transparent 2px) 0 -1px,
+			linear-gradient(90deg, #ec37504a 2px, white 2px) -1px 0;
 		background-size:
 			50px 50px,
 			50px 50px,
