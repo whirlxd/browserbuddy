@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Card from "../components/card.astro";
 ---
 
 <Layout title="BrowserBuddy - Build your own Browser extension">
@@ -10,7 +11,7 @@ import Layout from "../layouts/Layout.astro";
 		<div class="cta-text">
 			<h1>BrowserBuddy</h1>
 			<h2>Develop a browser extension</h2>
-			<h2>Ship it to the Chrome Web Store</h2>
+			<h2>Ship to the Chrome Web Store</h2>
 		</div>
 		<div class="cta-item-container cursor">
 			<img
@@ -27,6 +28,7 @@ import Layout from "../layouts/Layout.astro";
 	</main>
 
 	<div class="info">
+		<Card icon="✨" title="Brainstorm your idea" description="Take some time to reflect on your project idea." />
 		<h2>How does it work?</h2>
 		<ol>
 			<li>Brainstorm on your idea</li>
@@ -94,7 +96,7 @@ import Layout from "../layouts/Layout.astro";
 	}
 
 	.cta-text h2 {
-		font-size: 4rem;
+		font-size: 3rem;
 		color: white;
 		padding: 0.2rem 1.5rem;
 		transform: rotate(-4deg);
@@ -125,6 +127,7 @@ import Layout from "../layouts/Layout.astro";
 		display: flex;
 		/* justify-content: space-between; */
 		width: 100%;
+		z-index: 3;
 	}
 
 	.hammer {

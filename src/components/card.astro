@@ -1,0 +1,40 @@
+---
+const { icon, title, description } = Astro.props;
+---
+
+<div>
+<div class="back-card"></div>
+<div class="card">
+    <h2>{icon} {title}</h2>
+    <p> {description} </p> 
+</div>
+</div>
+
+<style>
+    .back-card {
+        width: 300px;
+        height: 300px;
+        background-color: var(--hc-green);
+        position: absolute;
+        z-index: 1;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        color: white;
+        padding: 2rem;
+        width: 300px;
+        height: 300px;
+        border-radius: ;
+        background-color: var(--hc-red);
+        position: relative;
+        z-index: 5;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-10px) translateX(10px) rotate(5deg) scale(1.1);
+    }
+</style>
