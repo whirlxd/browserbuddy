@@ -1,0 +1,45 @@
+---
+const { name, image, description } = Astro.props;
+---
+
+<div class="browser-extension-card">
+  <img src={image} alt={name} class="extension-image" />
+  <h3 class="extension-name">{name}</h3>
+  <p class="extension-description">{description}</p>
+</div>
+
+<style>
+  .browser-extension-card {
+    border: 1px solid var(--hc-red);
+    background-color: var(--hc-red);
+    color: white;
+    /* border-radius: 8px; */
+    padding: 1rem;
+    max-width: 300px;
+    height: 500px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .browser-extension-card:hover {
+    transform: translateY(-15px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .extension-image {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .extension-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  .extension-description {
+    font-size: 0.9rem;
+    /* color: #666; */
+  }
+</style>
