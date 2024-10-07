@@ -1,65 +1,18 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Card from "../components/card.astro";
 import SampleCard from "../components/samplecard.astro";
 ---
 
 <Layout title="BrowserBuddy - Build your own Browser extension">
 	<main>
-		<div class="cta-item-container hammer">
-			<img class="cta-icons" id="hammer" src="/hammer.png" alt="" />
-		</div>
 		<div class="cta-text">
-			<h1>BrowserBuddy</h1>
-			<h2>Develop a browser extension</h2>
-			<h2>Ship to the Chrome Web Store</h2>
-			<h3>Submit your project by Oct 31</h3>
+			<h1>Looking for inspiration?</h1>
+			<h2>Checkout what other Hack Clubbers are making.</h2>
 		</div>
-		<div class="cta-item-container cursor">
-			<img
-				class="cta-icons"
-				src="https://media3.giphy.com/media/J5dm29T4xgwyEnUYYc/giphy.webp"
-				alt="cursor-click"
-			/>
-		</div>
-		<div class="cta-actions">
-			<a target="blank" href="https://airtable.com/appgtKZwZBoOeFU7O/pagyeS51zr2kC1rp0/form">
-				<button>Submit your project</button>
-			</a>
-			<a target="blank" href="https://hackclub.slack.com/archives/C07MQBTNVRU">
-				<button class="join-slack">Join #browser-buddy on Slack</button>
-			</a>
-		</div>
-		<form>
-			<input type="email" name="email" placeholder="josias@hackclub.com" />
-			<button type="submit">Sign Up For the Grant!</button>
-		</form>
 	</main>
 
 	<div class="info">
-		<h2>How does it work?</h2>
-		<div class="info-cards">
-			<Card
-				icon="✨"
-				title="Brainstorm your idea"
-				link="/inspiration"
-				description="Take some time to reflect on your project idea. Feel free to share your ideas in <a href='https://hackclub.slack.com/archives/C07MQBTNVRU'>#browser-buddy</a>"
-			/>
-			<Card
-				icon="👨🏽‍💻"
-				title="Develop and Submit"
-				link="#"
-				description="Develop your Browser extension and submit for review"
-			/>
-			<Card
-				icon="🚀"
-				title="Publish your browser extension"
-				link="#"
-				description="Get $30 to launch your extension to Chrome Web Store."
-			/>
-		</div>
-
-		<h2>Requirements</h2>
+		<h2>Your app must meet the following requirements?</h2>
 		<ul>
 			<li>
 				The extension must be unique and solve a problem or do something
@@ -73,59 +26,17 @@ import SampleCard from "../components/samplecard.astro";
 			</li>
 		</ul>
 
-		<h2>Frequently Asked Questions</h2>
-		<ul class="faq">
-			<li>
-				<h3>How many projects can I submit?</h3>
-				We're limiting to one submission per person.
-			</li>
-			<li>
-				<h3>Who is eligible?</h3>
-				You must be a teenager or still in high-school.
-			</li>
-			<li>
-				<h3>I need help</h3>
-				Please reach out in the <a href="https://hackclub.slack.com/archives/C07MQBTNVRU">#browser-buddy</a> channel on Slack.
-			</li>
-			<li>
-				<h3>How many browsers should my extension support?</h3>
-				Your extension should be able to run in all Chrome-based browsers and Firefox.
-			</li>
-		</ul>
+		<div class="sample-cards">
+			<SampleCard name="ColorMancer" image="/colormancer.webp" description="ColorMancer lets you take control of any website’s color scheme. Customize the colors of your favorite sites to match your style or improve readability." />
+			<SampleCard name="TimeTrek" image="/timetrek.webp" description="TimeTrek is a browser extension that tracks the amount of time you spend on various websites throughout the week. It provides detailed reports at the end of each week, helping you understand your browsing habits and manage your time online more effectively." />
+			<SampleCard name="LiveTab" image="/timetrek.webp" description="LiveTab updates your Slack or Discord status with what you’re currently browsing on the web. Whether you’re reading an article, watching a video, or working on a project, LiveTab automatically shares your activity, keeping your status up-to-date in real-time." />
+		</div>
+
+		<div>
+			<h3>Want more inspiration? Join <a href="https://hackclub.slack.com/archives/C07MQBTNVRU">#browser-buddy</a> to chat with other Hack Clubbers.</h3>
+		</div>
 	</div>
 </Layout>
-
-<script>
-	// @ts-ignore
-	import confetti from "canvas-confetti"
-
-	const form = document.getElementsByTagName("form")[0];
-	form.addEventListener("submit", async (e) => {
-		// prevent default form submission
-		e.preventDefault();
-
-		if (form.email.value.trim() === "") return alert("Please enter a valid email address");
-
-		// console.log("email:", form.email.value);
-		const response = await fetch("/api/signup", {
-			method: "POST",
-			body: JSON.stringify({
-				email: form.email.value,
-			}),
-		});
-
-		const data = await response.json();
-		// console.log(data);
-		// console.log("confetti", confetti);
-		if (data.success) {
-			confetti({
-				particleCount: 200,
-				spread: 100,
-				origin: { y: 0.6 }
-			});
-		}
-	});
-</script>
 
 <style>
 	main {
@@ -321,41 +232,10 @@ import SampleCard from "../components/samplecard.astro";
 		grid-template-columns: repeat(2, 1fr);
 		list-style-type: "? - ";
 	}
-	
+
 	.sample-cards {
 		display: flex;
 		justify-content: space-evenly;
 		align-items: center;
 	}
-
-	.cta-actions {
-		width: 80%;
-		display: flex;
-		justify-content: space-evenly;
-		position: relative;
-		top: -4rem;
-	}
-
-	.cta-actions button {
-		padding: 1rem;
-		font-size: 1.2rem;
-		background-color: var(--hc-purple);
-		border: solid 3px var(--hc-purple);
-		transition: all 0.2s ease-in-out;
-	}
-
-	.cta-actions .join-slack{
-		background-color: transparent;
-		color: var(--hc-purple);
-	}
-
-	.cta-actions .join-slack:hover {
-		background-color: var(--hc-purple);
-		color: white;
-	}
-
-	.cta-actions button:active {
-		transform: scale(0.8);
-	}
-
 </style>
