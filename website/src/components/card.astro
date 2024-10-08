@@ -2,7 +2,7 @@
 const { icon, title, description, link, image, width, height } = Astro.props;
 ---
 
-<a href={link} style=`width:${width ?? 200};`>
+<a href={link} style=`width:${width ?? 300};height:${height ?? 300}`>
         <div class="card" >
             <h2>{icon} {title}</h2>
             <p class="card-content" set:html={description} />
@@ -25,8 +25,9 @@ const { icon, title, description, link, image, width, height } = Astro.props;
         align-items: flex-start;
         color: white;
         padding: 2rem;
-        width: 85%;
-        height: 90%;
+        width: 300px;
+        max-width: 300px;
+        height: 100%;
         background-color: var(--hc-red);
         /* position: relative; */
         z-index: 5;
