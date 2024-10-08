@@ -1,11 +1,9 @@
 ---
-const { icon, title, description, link, image } = Astro.props;
+const { icon, title, description, link, image, width, height } = Astro.props;
 ---
 
-<a href={link}>
-    <div>
-        <div class="back-card"></div>
-        <div class="card">
+<a href={link} style=`width:${width ?? 200};`>
+        <div class="card" >
             <h2>{icon} {title}</h2>
             <p class="card-content" set:html={description} />
             {image ? 
@@ -13,7 +11,6 @@ const { icon, title, description, link, image } = Astro.props;
                 : ""
             }
         </div>
-    </div>
 </a>
 
 <style>
@@ -22,25 +19,16 @@ const { icon, title, description, link, image } = Astro.props;
         color: white;
     }
 
-    .back-card {
-        width: 300px;
-        height: 300px;
-        background-color: var(--hc-green);
-        position: absolute;
-        z-index: 1;
-    }
-
     .card {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         color: white;
         padding: 2rem;
-        width: 300px;
-        height: 300px;
-        border-radius:;
+        width: 85%;
+        height: 90%;
         background-color: var(--hc-red);
-        position: relative;
+        /* position: relative; */
         z-index: 5;
         transition: all 0.2s ease-in-out;
     }
@@ -54,5 +42,6 @@ const { icon, title, description, link, image } = Astro.props;
 
     .card img {
         width: 100%;
+        height: auto;
     }
 </style>

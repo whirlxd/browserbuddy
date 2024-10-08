@@ -13,21 +13,23 @@ import Card from "../components/card.astro";
             <Card
                 title="1. Fork the Repository"
                 link="https://github.com/hackclub/browserbuddy/fork"
-                body="Visit our <a href='https://github.com/hackclub/browserbuddy'>GitHub respository</a> and click the <b>Fork</b> button in the top-right corner to create your own copy."
+                description="Visit our GitHub respository and click the <b>Fork</b> button in the top-right corner to create your own copy."
                 image="/screenshots/fork-repo.png"
             />
             <Card
                 title="2. Add Your Extension"
-                body="In your forked repository, open the <b>submissions</b> folder and add your extension."
+                description="In your forked repository, open the <b>submissions</b> folder and add your extension."
                 image="/screenshots/add-file.png"
             />
             <Card
-                title="3. Update the List"
-                body="Include your extension in the submissions list, following the format of existing entries."
+                title="3. Create a Pull Request"
+                description="Create a new pull request from your fork to the main repository. We'll review and merge your submission once approved."
+                image="/screenshots/fork-contribute.png"
             />
             <Card
-                title="4. Create a Pull Request"
-                body="Open a pull request from your fork to the main repository. We'll review and merge your submission."
+                title="4. Get your grant"
+                description="Once your Pull Request has been approved and merged, you'll receive a grant of $30 to get a Chrome Web Store license and launch your extension."
+                image="/screenshots/submitted.png"
             />
         </ul>
     </main>
@@ -76,10 +78,11 @@ import Card from "../components/card.astro";
     main div.cta-text:last-child {
         transform: rotate(-3deg);
     }
+
     .link-card-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        padding: 0;
+        gap: 2em;
+        padding: 1em;
     }
 </style>
