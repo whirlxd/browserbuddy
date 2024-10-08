@@ -1,0 +1,85 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/card.astro";
+---
+
+<Layout title="Submit Your Extension">
+    <main>
+        <div class="cta-text">
+            <h2>Submitting your browser extension</h2>
+        </div>
+
+        <ul role="list" class="link-card-grid">
+            <Card
+                title="1. Fork the Repository"
+                link="https://github.com/hackclub/browserbuddy/fork"
+                body="Visit our <a href='https://github.com/hackclub/browserbuddy'>GitHub respository</a> and click the <b>Fork</b> button in the top-right corner to create your own copy."
+                image="/screenshots/fork-repo.png"
+            />
+            <Card
+                title="2. Add Your Extension"
+                body="In your forked repository, open the <b>submissions</b> folder and add your extension."
+                image="/screenshots/add-file.png"
+            />
+            <Card
+                title="3. Update the List"
+                body="Include your extension in the submissions list, following the format of existing entries."
+            />
+            <Card
+                title="4. Create a Pull Request"
+                body="Open a pull request from your fork to the main repository. We'll review and merge your submission."
+            />
+        </ul>
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1.5rem;
+        max-width: 50vw;
+    }
+    h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0;
+    }
+    .cta-text {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 4em 0;
+    }
+
+    .cta-text h2 {
+        font-size: 3rem;
+        color: white;
+        padding: 0.2rem 1.5rem;
+        transform: rotate(-4deg);
+        margin: 0;
+        background-color: var(--hc-green);
+        z-index: 1;
+    }
+
+    .cta-text h3 {
+        font-size: 1.5rem;
+        color: white;
+        padding: 0.5rem 1.6rem;
+        /* transform: rotate(3deg); */
+        margin: 0;
+        background-color: var(--hc-purple);
+        z-index: 1;
+    }
+
+    main div.cta-text:last-child {
+        transform: rotate(-3deg);
+    }
+    .link-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 0;
+    }
+</style>

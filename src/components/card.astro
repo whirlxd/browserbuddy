@@ -1,5 +1,5 @@
 ---
-const { icon, title, description, link } = Astro.props;
+const { icon, title, description, link, image } = Astro.props;
 ---
 
 <a href={link}>
@@ -8,6 +8,10 @@ const { icon, title, description, link } = Astro.props;
         <div class="card">
             <h2>{icon} {title}</h2>
             <p class="card-content" set:html={description} />
+            {image ? 
+                <img src={image} alt={title} />
+                : ""
+            }
         </div>
     </div>
 </a>
@@ -46,5 +50,9 @@ const { icon, title, description, link } = Astro.props;
     }
     .card-content a {
         color: white;
+    }
+
+    .card img {
+        width: 100%;
     }
 </style>
