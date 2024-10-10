@@ -13,7 +13,7 @@ const { title } = Astro.props;
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.png" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
@@ -23,6 +23,7 @@ const { title } = Astro.props;
 				fill="none"
 				height="158"
 				viewBox="0 0 280 158"
+				padding-top: 0px;
 				width="280"
 				xmlns="http://www.w3.org/2000/svg"
 				xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -87,8 +88,9 @@ const { title } = Astro.props;
 						d="m49 90.658c.7 1.6999 7.4999 8.5999 3.7999 9.6-3.6998 1-2.3999 9.5 4.9001 7.6 7.2998-1.9 9.5998-11.5001 2.5998-15.5001-6.9999-3.9999-11.2998-1.6999-11.2998-1.6999z"
 						style="fill-rule:evenodd;clip-rule:evenodd;fill:#fff;stroke:#252429;stroke-width:3;stroke-linecap:round;stroke-linejoin:round"
 					></path></g
-				></svg
-			>
+				></svg>
+
+				<a href="/"><img src="logo.png" style="width: 500px"></a>
 		</header>
 		<div class="page-content">
 			<slot />
