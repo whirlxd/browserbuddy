@@ -96,14 +96,15 @@ const { icon, icon2, title, description, link, image, width, height } =
     const cards = document.querySelectorAll('.card');
 
     cards.forEach(card => {
-    card.addEventListener('mouseover', () => {
-        const randomRotate = Math.floor(Math.random() * 11) - 5;
-        card.style.transform = `translateY(-10px) translateX(10px) rotate(${randomRotate}deg) scale(1.1)`;
-    });
+        const cardElement = card as HTMLElement;
 
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = '';
-    });
-});
+        cardElement.addEventListener('mouseover', () => {
+            const randomRotate = Math.floor(Math.random() * 11) - 5;
+            cardElement.style.transform = `translateY(-10px) scale(1.1) rotate(${randomRotate}deg)`;
+        });
 
+        cardElement.addEventListener('mouseleave', () => {
+            cardElement.style.transform = '';
+        });
+    });
 </script>
