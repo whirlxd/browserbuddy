@@ -39,10 +39,11 @@ const { icon, icon2, title, description, link, image, width, height } =
         /* position: relative; */
         z-index: 5;
         transition: all 0.2s ease-in-out;
+        border-radius: 25px;
     }
 
     .card:hover {
-        transform: translateY(-10px) translateX(10px) rotate(5deg) scale(1.1);
+        transform: translateY(-10px) translateX(10px) scale(1.1);
     }
     .card-content a {
         color: white;
@@ -90,3 +91,18 @@ const { icon, icon2, title, description, link, image, width, height } =
         }
     }
 </style>
+<script>
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach(card => {
+    card.addEventListener('mouseover', () => {
+        const randomRotate = Math.floor(Math.random() * 11) - 5;
+        card.style.transform = `translateY(-10px) translateX(10px) rotate(${randomRotate}deg) scale(1.1)`;
+    });
+
+    card.addEventListener('mouseleave', () => {
+        card.style.transform = '';
+    });
+});
+
+</script>
