@@ -123,8 +123,32 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 					<h3>How many browsers should my extension support?</h3>
 				</span>
 				<p>
-					Your extension should be able to run in all Chrome-based
-					browsers and Firefox.
+					Your extension should be able to run in both Chrome-based
+					browsers like Chrome/Edge/Brave and Firefox.
+				</p>
+			</li>
+			<li>
+				<span>
+					<img src={circleHelpIcon.src} width="20" height="20" />
+					<h3>How do I get started making an extension?</h3>
+				</span>
+				<p>
+					<a href="https://developer.chrome.com/docs/extensions/get-started">
+						Google's browser extension tutorials 
+					</a>
+					are a great place to start. Also read about 
+					<a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Build_a_cross_browser_extension">
+						building cross-browser extension from MDN.
+					</a>
+				</p>
+			</li>
+			<li>
+				<span>
+					<img src={circleHelpIcon.src} width="20" height="20" />
+					<h3>What do I need to build an extension?</h3>
+				</span>
+				<p>
+					All you need is a text editor and a web browser. You might want to install both a chrome-based browser like Chrome/Edge/Brave and Firefox to test your extension. 
 				</p>
 			</li>
 		</ul>
@@ -370,7 +394,7 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 		padding: 1em;
 		margin-right: 0.5em;
 		margin-top: 0.5em;
-		height: 100px;
+		height: 80px;
 		overflow-y: hidden;
 		animation-name: faq-close;
 		animation-duration: 0.5s;
@@ -380,9 +404,13 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 	
 	}
 
+	.faq li p {
+		margin: 1rem 0;
+	}
+
 	@keyframes faq-open {
 		from {
-			height: 100px;
+			height: 80px;
 		}
 		to {
 			height: 200px;
@@ -394,7 +422,7 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 			height: 200px;
 		}
 		to {
-			height: 100px;
+			height: 80px;
 		}
 	}
 
