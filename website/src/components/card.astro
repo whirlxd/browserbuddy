@@ -1,5 +1,6 @@
 ---
-const { icon, icon2, title, description, link, image, width, height } = Astro.props;
+const { icon, icon2, title, description, link, image, width, height } =
+    Astro.props;
 ---
 
 <!-- <a href={link} style=`width:${width ?? 300};height:${height ?? 300}`> -->
@@ -7,12 +8,11 @@ const { icon, icon2, title, description, link, image, width, height } = Astro.pr
     <div class="card">
         <h2>{icon} {title} <Fragment set:html={icon2} /></h2>
         <div>
-        <Fragment set:html={description}>
-            <!-- <p class="card-content" set:html={description} /> -->
-        </Fragment>
- 
+            <Fragment set:html={description}>
+                <!-- <p class="card-content" set:html={description} /> -->
+            </Fragment>
         </div>
-           {image ? <img src={image} alt={title} /> : ""}
+        {image ? <img src={image} alt={title} /> : ""}
     </div>
 </a>
 
@@ -51,6 +51,7 @@ const { icon, icon2, title, description, link, image, width, height } = Astro.pr
     .card img {
         width: 100%;
         height: auto;
+        margin: 1rem 0;
     }
 
     @media screen and (max-width: 1365px) {
@@ -77,11 +78,10 @@ const { icon, icon2, title, description, link, image, width, height } = Astro.pr
         .card > * {
             /* margin-left: 0.8rem; */
         }
-        
     }
 
     @media screen and (max-width: 500px) {
-       a {
+        a {
             margin: 2.5rem 0;
         }
         .card {
