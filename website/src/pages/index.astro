@@ -77,9 +77,7 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 		<br />
 		<h2>Requirements</h2>
 		<ul>
-			<li>
-				The extension must be unique and solve a problem.
-			</li>
+			<li>The extension must be unique and solve a problem.</li>
 			<li>The extension must have been tested by at least 10 users.</li>
 			<li>The source code of your extension must be open-source.</li>
 			<li>
@@ -132,11 +130,15 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 					<h3>How do I get started making an extension?</h3>
 				</span>
 				<p>
-					<a href="https://developer.chrome.com/docs/extensions/get-started">
-						Google's browser extension tutorials 
+					<a
+						href="https://developer.chrome.com/docs/extensions/get-started"
+					>
+						Google's browser extension tutorials
 					</a>
-					are a great place to start. Also read about 
-					<a href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Build_a_cross_browser_extension">
+					are a great place to start. Also read about
+					<a
+						href="https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Build_a_cross_browser_extension"
+					>
 						building cross-browser extension from MDN.
 					</a>
 				</p>
@@ -147,7 +149,9 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 					<h3>What do I need to build an extension?</h3>
 				</span>
 				<p>
-					All you need is a text editor and a web browser. You might want to install both a chrome-based browser like Chrome/Edge/Brave and Firefox to test your extension. 
+					All you need is a text editor and a web browser. You might
+					want to install both a chrome-based browser like
+					Chrome/Edge/Brave and Firefox to test your extension.
 				</p>
 			</li>
 		</ul>
@@ -384,6 +388,8 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 		grid-template-columns: repeat(2, 1fr);
 		/* list-style-type: "? - "; */
 		list-style-type: none;
+		height: 480px;
+		width: 100%;
 		padding: 0;
 	}
 
@@ -395,44 +401,66 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 		margin-top: 0.5em;
 		height: 80px;
 		overflow-y: hidden;
-		animation-name: faq-close;
+		/* animation-name: faq-close;
 		animation-duration: 0.5s;
 		animation-direction: forwards;
 		animation-iteration-count: 1;
-		animation-fill-mode: forwards;
-	
+		animation-fill-mode: forwards; */
+		transition: transform 0.3s ease, box-shadow 0.3s ease;
+	}
+
+	.faq li span {
+		height: 20px;
+		font-size: 1.3rem;
 	}
 
 	.faq li p {
 		margin: 1rem 0;
+		font-size: 1.2rem;
 	}
 
-	@keyframes faq-open {
+	/* @keyframes faq-open {
 		from {
 			height: 80px;
 		}
 		to {
-			height: 200px;
+			height: 230px;
 		}
 	}
 
 	@keyframes faq-close {
 		from {
-			height: 200px;
+			height: 230px;
 		}
 		to {
 			height: 80px;
 		}
-	}
+	} */
 
 	.faq li:hover {
-		animation-name: faq-open;
+		/* animation-name: faq-open;
 		animation-duration: 0.5s;
 		animation-direction: forwards;
 		animation-iteration-count: 1;
-		animation-fill-mode: forwards;
+		animation-fill-mode: forwards; */
 		/* height: fit-content; */
+		animation: hoverEffect 0.3s forwards;
 	}
+
+	@keyframes hoverEffect {
+  0% {
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  100% {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+  /* 100% {
+    transform: scale(1.05) rotate(-2deg);
+    box-shadow: 0 12px 16px rgba(0, 0, 0, 0.3);
+  } */
+}
 
 	.faq li h3 {
 		margin-left: 0.3rem;
@@ -480,6 +508,51 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 
 	.cta-actions button:active {
 		transform: scale(0.8);
+	}
+
+	@media screen and (max-width: 1560px) {
+		.faq {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.faq li {
+			margin-right: 0;
+			height: 100px;
+			animation-name: faq-close-2;
+			animation-duration: 0.5s;
+			animation-direction: forwards;
+			animation-iteration-count: 1;
+			animation-fill-mode: forwards;
+			padding: 0.8em 1em;
+		}
+
+		.faq li:hover {
+			animation-name: faq-open-2;
+			animation-duration: 0.5s;
+			animation-direction: forwards;
+			animation-iteration-count: 1;
+			animation-fill-mode: forwards;
+			/* height: fit-content; */
+		}
+
+		@keyframes faq-open-2 {
+			from {
+				height: 100px;
+			}
+			to {
+				height: 800px;
+			}
+		}
+
+		@keyframes faq-close-2 {
+			from {
+				height: 800px;
+			}
+			to {
+				height: 100px;
+			}
+		}
 	}
 
 	@media screen and (max-width: 1365px) {
