@@ -76,7 +76,7 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 		<br />
 		<br />
 		<h2>Requirements</h2>
-		<ul>
+		<ul class="requirements">
 			<li>The extension must be unique and solve a problem.</li>
 			<li>The extension must have been tested by at least 10 users.</li>
 			<li>The source code of your extension must be open-source.</li>
@@ -494,6 +494,10 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 		border: solid 3px var(--hc-purple);
 		transition: all 0.2s ease-in-out;
 		cursor: pointer;
+	}
+
+	.requirements li {
+		margin: 1rem 0;
 	}
 
 	.cta-actions .join-slack {
