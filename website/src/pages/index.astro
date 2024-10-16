@@ -256,7 +256,7 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 		position: relative;
 		display: flex;
 		/* justify-content: space-between; */
-		width: 100%;
+		width: 80%;
 		z-index: 3;
 	}
 
@@ -299,7 +299,6 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 
 	.cursor {
 		top: -18%;
-		right: 5%;
 		justify-content: flex-end;
 		align-items: flex-end;
 		z-index: 2;
@@ -512,6 +511,18 @@ import circleHelpIcon from "lucide-static/icons/circle-help.svg";
 
 	.cta-actions button:active {
 		transform: scale(0.8);
+	}
+
+@media screen and (max-width: 1500px) {
+		.hammer {
+			left: -6vw;
+		}
+	}
+
+@media screen and (max-width: 1315px) {
+		.hammer {
+			left: -10vw;
+		}
 	}
 
 	@media screen and (max-width: 1560px) {
