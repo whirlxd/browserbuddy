@@ -1,12 +1,37 @@
 ---
-const { icon, icon2, title, description, link, image, width, height } =
-    Astro.props;
+const { icon, title, description, link, image, width, height } = Astro.props;
 ---
 
 <!-- <a href={link} style=`width:${width ?? 300};height:${height ?? 300}`> -->
 <a href={link}>
-    <div class="card">
-        <h2>{icon} {title} <Fragment set:html={icon2} /></h2>
+    <div class=`card ${link ? 'underline' : ''}`>
+        <h2>
+            {icon}
+            {title}
+            {
+                link ? (
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-arrow-right"
+                    >
+                        <>
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                        </>
+                    </svg>
+                ) : (
+                    ""
+                )
+            }
+        </h2>
         <div>
             <Fragment set:html={description}>
                 <!-- <p class="card-content" set:html={description} /> -->
@@ -56,6 +81,10 @@ const { icon, icon2, title, description, link, image, width, height } =
         margin: 1rem 0;
     }
 
+    .underline h2 {
+        text-decoration: underline;
+    }
+
     @media screen and (max-width: 1365px) {
         a {
             width: 100%;
@@ -93,18 +122,18 @@ const { icon, icon2, title, description, link, image, width, height } =
     }
 </style>
 <script>
-    const cards = document.querySelectorAll('.card');
+    const cards = document.querySelectorAll(".card");
 
-    cards.forEach(card => {
+    cards.forEach((card) => {
         const cardElement = card as HTMLElement;
 
-        cardElement.addEventListener('mouseover', () => {
+        cardElement.addEventListener("mouseover", () => {
             const randomRotate = Math.floor(Math.random() * 11) - 5;
             cardElement.style.transform = `translateY(-10px) scale(1.1) rotate(${randomRotate}deg)`;
         });
 
-        cardElement.addEventListener('mouseleave', () => {
-            cardElement.style.transform = '';
+        cardElement.addEventListener("mouseleave", () => {
+            cardElement.style.transform = "";
         });
     });
 </script>
