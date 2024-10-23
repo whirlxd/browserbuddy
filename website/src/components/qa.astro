@@ -133,4 +133,45 @@ const { title, content } = Astro.props;
             }
         }
     }
+
+    @media screen and (max-width: 500px) {
+        li {
+            height: 100px;
+            animation-name: faq-close-2;
+            animation-duration: 0.5s;
+            animation-direction: forwards;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+        }
+
+        li span {
+            padding: 1.5rem 0;
+        }
+
+        li:hover {
+            animation-name: faq-open-2;
+            animation-duration: 0.5s;
+            animation-direction: forwards;
+            animation-iteration-count: 1;
+            animation-fill-mode: forwards;
+            /* height: fit-content; */
+        }
+        @keyframes faq-open-2 {
+            from {
+                height: 100px;
+            }
+            to {
+                height: 800px;
+            }
+        }
+
+        @keyframes faq-close-2 {
+            from {
+                height: 800px;
+            }
+            to {
+                height: 100px;
+            }
+        }
+    }
 </style>

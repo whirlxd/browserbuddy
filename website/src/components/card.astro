@@ -108,11 +108,19 @@ const { icon, title, description, link, image, width, height } = Astro.props;
 
     @media screen and (max-width: 500px) {
         a {
-            margin: 2.5rem 0;
+            margin: 1.5rem 0;
         }
         .card {
-            width: 100%;
+            background-color: var(--hc-red);
+            color: white;
+            padding: 1rem 0 1rem 1rem;
+            width: 90%;
             height: 100%;
+            border-radius: 8px;
+        }
+        .card h2, .card div {
+            max-width: 70%;
+            padding-right: 0;
         }
     }
 </style>
