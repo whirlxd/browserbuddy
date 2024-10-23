@@ -6,7 +6,7 @@ BrowserBuddy, by Hack Club, supports teenagers in building and publishing their 
 
 1. **Brainstorm**: Think of a unique idea for an extension.
 2. **Develop & Test**: Build and test your extension with at least 10 users.
-3. **Submit & Publish**: Submit your project by October 31st, and get your extension live on Chrome and Firefox.
+3. **Submit & Publish**: Submit your project by November 20th, and get your extension live on Chrome and Firefox.
 
 ## Requirements
 
