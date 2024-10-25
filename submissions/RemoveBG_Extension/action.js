@@ -109,7 +109,7 @@ chrome.contextMenus.onClicked.addListener(genericOnClick);
 
 chrome.runtime.onInstalled.addListener(function () {
   let context = "image";
-  let title = "image";
+  let title = "Remove Background";
   chrome.contextMenus.create(
     {
       title: title,
