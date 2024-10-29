@@ -131,7 +131,7 @@ function genericOnClick(info) {
     removeImageBackground(info.srcUrl);
     chrome.storage.local.set({ alertMessage: "You clicked me!" }, function () {
       chrome.action.setPopup({ popup: "popup.html" });
-      chrome.action.openPopup();
+      // chrome.action.openPopup();
     });
   } else {
     console.log("Standard context menu item clicked.");
