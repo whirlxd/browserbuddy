@@ -1,0 +1,140 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/card.astro";
+---
+
+<Layout title="Submit Your Extension">
+    <main>
+        <div class="cta-text">
+            <h1>What's in it for you?</h1>
+        </div>
+    </main>
+    <div class="info">
+        <ul role="list" class="link-card-grid">
+            <Card
+                title="JavaScript.Info E-Books"
+                link="https://javascript.info/ebook"
+                image="/screenshots/javascript-info-preview.png"
+                height="350px"
+            />
+            <Card
+                title="ChatGPT"
+                link="https://chatgpt.com/"
+                image="/screenshots/chatgpt.png"
+                height="350px"
+            />
+            <Card
+                title="Claude"
+                link="https://claude.ai"
+                image="/screenshots/claude.png"
+                height="350px"
+            />
+            <Card
+                title="Railway"
+                image="/screenshots/railway.png"
+                link="https://railway.app/"
+                height="350px"
+            />
+            <Card
+                title="Hetzner"
+                image="/screenshots/hetzner.jpeg"
+                link="https://www.hetzner.com/"
+                height="350px"
+            />
+        </ul>
+    </div>
+</Layout>
+
+<style>
+    main {
+        margin: auto;
+        padding: 1.5rem;
+        max-width: 75vw;
+    }
+
+    .cta-text h1 {
+		font-size: 4rem;
+		color: white;
+		padding: 0.2rem 1.5rem;
+		transform: rotate(5deg);
+		margin: 0 0 2rem 0;
+		background-color: #ec3750;
+		z-index: 2;
+		display: inline;
+        width: 80%;
+	}
+
+   .cta-text {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 4em 0;
+        text-align: center;
+    }
+
+    .cta-text h2 {
+        font-size: 3rem;
+        color: white;
+        padding: 0.2rem 1.5rem;
+        transform: rotate(-4deg);
+        margin: 0;
+        background-color: var(--hc-green);
+        z-index: 1;
+    }
+
+    .cta-text h3 {
+        font-size: 1.5rem;
+        color: white;
+        padding: 0.5rem 1.6rem;
+        /* transform: rotate(3deg); */
+        margin: 0;
+        background-color: var(--hc-purple);
+        z-index: 1;
+    }
+
+    main div.cta-text:last-child {
+        transform: rotate(-3deg);
+    }
+
+    .link-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8em;
+        padding: 2em;
+        padding-bottom: 5em;
+    }
+
+    .info {
+        margin: 3em 0;
+    }
+
+    @media screen and (max-width: 500px) {
+        main {
+            height: 20vh;
+            margin: 0;
+            width: 100%;
+        }
+
+        .cta-text {
+            width: 100%;
+        }
+
+        .cta-text h2 {
+            font-size: 1.6rem;
+            width: 100%;
+        }
+
+        .link-card-grid {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        .info {
+            width: 100%;
+        }
+    }
+</style>
