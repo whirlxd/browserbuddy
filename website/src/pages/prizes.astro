@@ -3,13 +3,17 @@ import Layout from "../layouts/Layout.astro";
 import Card from "../components/card.astro";
 ---
 
-<Layout title="Submit Your Extension">
+<Layout title="What's in it for you?">
     <main>
         <div class="cta-text">
             <h1>What's in it for you?</h1>
         </div>
     </main>
+
     <div class="info">
+        <p class="instructions">
+            Once you've received your grant, follow instructions to get your chrome developer account and publish to the chrome web store <a href="https://developer.chrome.com/docs/webstore/publish">here</a>.
+        </p>
         <ul role="list" class="link-card-grid">
             <Card
                 title="JavaScript.Info E-Books"
@@ -107,7 +111,39 @@ import Card from "../components/card.astro";
     }
 
     .info {
-        margin: 3em 0;
+        margin: 8em 0;
+        width: 65%;
+    }
+
+    .instructions {
+        margin: 0 1em;
+        font-size: 1.5rem;
+    }
+
+    a {
+        color: black;
+    }
+
+    @media screen and (max-width: 1100px) {
+        .info {
+            width: 100%;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
+        .info {
+            display: flex;                        
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        .info .link-card-grid {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            align-items: center;
+        }
     }
 
     @media screen and (max-width: 500px) {
