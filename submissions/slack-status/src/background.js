@@ -25,7 +25,7 @@ async function main() {
     if (enabled) {
       updateStatus(tab.id || 0, auth);
     }
-    await delay(1200);
+    await delay(5000);
   }
 }
 
