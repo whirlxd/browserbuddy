@@ -45,24 +45,44 @@ const ideasForm = document.getElementById("ideas-form");
 
 ideasForm.addEventListener("submit", submitHandler);
 
+function showButtonLoading() {
+	const text = "Generate Ideas";
+	let loadCount = 1;
+
+	const generateIdeasBtn = document.getElementById("generate-ideas-btn");
+
+	const loadInterval =  setInterval(() => {
+		loadCount = (loadCount + 1) % 4;
+
+		generateIdeasBtn.innerText = text + new Array(loadCount).fill(".").join("");
+	}, 500);
+	const stopLoading = () => {
+		clearInterval(loadInterval);
+		generateIdeasBtn.innerText = text;
+	};
+	return stopLoading;
+
+}
+
 async function submitHandler(event) {
 	event.preventDefault();
 
 	const problemStatement = document.getElementById("problem").value;
 
-	const response = await fetch("/api/ideas", {
+	const stopLoadingFn = showButtonLoading();
+	fetch("/api/ideas", {
 		method: "POST",
 		body: JSON.stringify({
 			problem: problemStatement
 		})
-	});
-	const data = await response.json();
-	console.log("data received: ", data);
+	}).then(response => response.json())
+	.then(data => {
+			const extensions = data.extensions;
+			displayResponses(extensions);
+			stopLoadingFn();
+			
+		});
 
-	const extensions = data.extensions;
-
-	displayResponses(extensions);
-	console.log(data);
 }
 
 function displayResponses(responses) {
@@ -96,7 +116,6 @@ function displayResponses(responses) {
 		twist.innerText = `Twist: ${response.uniqueTwist}`;
 		responseEl.appendChild(twist);
 	
-		console.log(responseEl);
 		responsesParent.appendChild(responseEl);
 	});
 
