@@ -209,6 +209,22 @@ const { title } = Astro.props;
 			monospace;
 	}
 
+	#responses {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-gap: 1rem;
+	}
+
+	.suggestion {
+		background-color: var(--hc-red);
+		border-radius: 20px;
+		color: white;
+		padding: 2rem;
+		font-size: 1.3rem;
+		width: 350px;
+	
+	}
+
 	.chevron-down {
 		transform: scale(3);
 		animation: upDown 2s ease-in-out infinite;
