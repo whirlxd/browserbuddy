@@ -1,6 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import SampleCard from "../components/samplecard.astro";
 ---
 
 <Layout title="BrowserBuddy - Build your own Browser extension">
@@ -41,7 +40,14 @@ import SampleCard from "../components/samplecard.astro";
 </Layout>
 
 <script>
-const ideasForm = document.getElementById("ideas-form");
+interface Extension {
+	name: string, 
+	description: string,
+	features: string[],
+	uniqueTwist: string
+}
+
+const ideasForm = document.getElementById("ideas-form") as HTMLFormElement;
 
 ideasForm.addEventListener("submit", submitHandler);
 
@@ -49,7 +55,7 @@ function showButtonLoading() {
 	const text = "Generate Ideas";
 	let loadCount = 1;
 
-	const generateIdeasBtn = document.getElementById("generate-ideas-btn");
+	const generateIdeasBtn = document.getElementById("generate-ideas-btn") as HTMLButtonElement;
 
 	const loadInterval =  setInterval(() => {
 		loadCount = (loadCount + 1) % 4;
@@ -64,10 +70,10 @@ function showButtonLoading() {
 
 }
 
-async function submitHandler(event) {
+async function submitHandler(event: SubmitEvent) {
 	event.preventDefault();
 
-	const problemStatement = document.getElementById("problem").value;
+	const problemStatement = (document.getElementById("problem") as HTMLInputElement).value;
 
 	const stopLoadingFn = showButtonLoading();
 	fetch("/api/ideas", {
@@ -85,8 +91,8 @@ async function submitHandler(event) {
 
 }
 
-function displayResponses(responses) {
-	const responsesParent = document.getElementById("responses");
+function displayResponses(responses: Extension[]) {
+	const responsesParent = document.getElementById("responses") as HTMLDivElement;
 
 	// clear the contents to put in the new suggestions
 	responsesParent.innerHTML = '';
@@ -119,7 +125,7 @@ function displayResponses(responses) {
 		responsesParent.appendChild(responseEl);
 	});
 
-	document.getElementById("suggestions-placeholder").style.display = "none";
+	(document.getElementById("suggestions-placeholder") as HTMLDivElement).style.display = "none";
 }
 </script>
 
