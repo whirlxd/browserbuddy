@@ -1,32 +1,21 @@
 {
   "manifest_version": 3,
-  "name": "Summarzy",
+  "name": "Summifier",
   "version": "1.0",
-  "description": "Summarize selected text directly from the browser.",
+  "description": "Summarize selected text directly from the browser, highlighting key points for better comprehension.",
   "permissions": [
-    "contextMenus",
-    "activeTab",
     "storage",
-    "alarms",
-    "notifications",
-    "tabs"
+    "contextMenus"
   ],
-  "host_permissions": [
-    "https://api-inference.huggingface.co/*",
-    "*://*.facebook.com/*",
-    "*://*.instagram.com/*",
-    "*://*.twitter.com/*",
-    "*://*.tiktok.com/*"
-  ],
-  "background": {
-    "service_worker": "bg.js"
-  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icon16.png",
-      "48": "icon48.png",
+      "48": "icon48.png", 
       "128": "icon128.png"
     }
+  },
+  "background": {
+    "service_worker": "bg.js"
   }
 }

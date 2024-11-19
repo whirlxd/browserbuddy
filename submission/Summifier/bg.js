@@ -1,15 +1,9 @@
-const HF_API_KEY = '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';
 const SUMMARIZE_API_URL = 'https://api-inference.huggingface.co/models/sshleifer/distilbart-cnn-12-6';
 
-// Create context menu item for text selection
-
 function extractKeypoints(summary) {
-  // Split into sentences and filter out empty ones
   let sentences = summary.split(/[.!?]+/)
     .map(sentence => sentence.trim())
     .filter(sentence => sentence.length > 0);
-
-  // Extract key points based on importance markers
   const importanceMarkers = [
     'importantly',
     'significantly',
@@ -40,12 +34,25 @@ function extractKeypoints(summary) {
   );
 }
 
+async function getApiKey() {
+  const result = await chrome.storage.sync.get(['hf_api_key']);
+  return result.hf_api_key;
+}
+
 async function summarizeText(text) {
+  const apiKey = await getApiKey();
+  if (!apiKey) {
+    return {
+      summary: "Please set your Hugging Face API key in extension settings",
+      keypoints: ["API key not configured"]
+    };
+  }
+  
   try {
     const response = await fetch(SUMMARIZE_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${HF_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -83,11 +90,21 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-// Listen for the context menu click event
+async function checkApiKey() {
+  const result = await chrome.storage.sync.get(['hf_api_key']);
+  return result.hf_api_key;
+}
+
 chrome.contextMenus.onClicked.addListener(async (info) => {
   if (!info.selectionText) return;
 
   if (info.menuItemId === "summarize") {
+    const apiKey = await checkApiKey();
+    if (!apiKey) {
+      chrome.action.openPopup();
+      return;
+    }
+    
     const result = await summarizeText(info.selectionText);
     chrome.storage.local.set({ summary: result.summary, keypoints: result.keypoints });
     chrome.action.openPopup();
