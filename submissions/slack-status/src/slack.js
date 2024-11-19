@@ -6,6 +6,7 @@ export async function getSlackTeams() {
     if (!slackTab.id) throw new Error("Failed to create tab");
     console.debug(`Created Slack tab: ${slackTab.id}`);
 
+    // localConfig_v2 stores info on Slack workspaces and the xoxc tokens
     const results = await chrome.scripting.executeScript({
         target: { tabId: slackTab.id },
         func: () => localStorage.getItem("localConfig_v2"),
