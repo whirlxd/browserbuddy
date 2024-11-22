@@ -2,7 +2,6 @@
 const { icon, title, description, link, image } = Astro.props;
 ---
 
-<!-- <a href={link} style=`width:${width ?? 300};height:${height ?? 300}`> -->
 <a href={link}>
   <div class=`card`>
     <h2>
@@ -38,7 +37,15 @@ const { icon, title, description, link, image } = Astro.props;
         <!-- <p class="card-content" set:html={description} /> -->
       </Fragment>
     </div>
-    {image ? <img src={image} alt={title} /> : ""}
+    {
+      image ? (
+        <div class="card-image">
+          {image ? <img src={image} alt={title} /> : ""}
+        </div>
+      ) : (
+        ""
+      )
+    }
   </div>
 </a>
 
@@ -49,7 +56,7 @@ const { icon, title, description, link, image } = Astro.props;
     display: flex;
     justify-content: center;
     align-items: center;
-    display: inline-block;
+    width: 100%;
   }
 
   .card {
@@ -75,11 +82,18 @@ const { icon, title, description, link, image } = Astro.props;
   .card-content a {
     color: white;
   }
+  .card .card-image {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-  .card img {
+  .card .card-image img {
     width: 100%;
     height: auto;
     margin: 1rem 0;
+    border-radius: 8px;
   }
 
   .card h2 {
@@ -106,20 +120,14 @@ const { icon, title, description, link, image } = Astro.props;
       background-color: transparent;
       width: 100%;
       max-width: 100%;
-      /* height: 100%; */
       color: var(--hc-red);
-      /* border-bottom: solid 2px var(--hc-red); */
     }
 
     .card h2 {
       color: white;
       background-color: var(--hc-red);
-      padding: 1rem 2rem;
+      padding: 1rem;
       max-width: 70%;
-    }
-
-    .card > * {
-      /* margin-left: 0.8rem; */
     }
   }
 
@@ -130,15 +138,15 @@ const { icon, title, description, link, image } = Astro.props;
     .card {
       background-color: var(--hc-red);
       color: white;
-      padding: 1rem 0 1rem 1rem;
+      padding: 1rem;
+      /* padding: 1rem 0 1rem 1rem; */
       width: 90%;
       height: 100%;
       border-radius: 8px;
     }
     .card h2,
-    .card div {
+    .card div:not(.card-image) {
       max-width: 70%;
-      padding-right: 0;
     }
   }
 </style>
