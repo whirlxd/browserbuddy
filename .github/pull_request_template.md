@@ -1,4 +1,7 @@
-### Project Details
+# BrowserBuddy Extension Submission
+
+## Project Details
+
 1. **What is the name of your project?**
 
 2. **How many hours did you spend developing this?**  
@@ -15,5 +18,6 @@
 
 ---
 
-### Additional Comments
+## Additional Comments
+
 (Feel free to provide any additional context or notes here)
