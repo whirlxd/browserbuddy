@@ -269,6 +269,7 @@ const { title } = Astro.props;
   }
 
   main h1 {
+    font-size: 6rem;
     color: white;
     padding: 0.2rem 1.5rem;
     transform: rotate(5deg);
@@ -467,6 +468,10 @@ const { title } = Astro.props;
   }
 
   @media screen and (max-width: 500px) {
+    .cta-text h1 {
+      font-size: 2rem;
+    }
+
     .link-card-grid {
       width: 100%;
       padding: 0;

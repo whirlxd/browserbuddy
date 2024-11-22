@@ -126,8 +126,7 @@ const { icon, title, description, link, image } = Astro.props;
     .card h2 {
       color: white;
       background-color: var(--hc-red);
-      padding: 1rem;
-      max-width: 70%;
+      /* padding: 1rem; */
     }
   }
 
@@ -144,7 +143,11 @@ const { icon, title, description, link, image } = Astro.props;
       height: 100%;
       border-radius: 8px;
     }
-    .card h2,
+
+    .card h2 {
+      width: 100%;
+    }
+
     .card div:not(.card-image) {
       max-width: 70%;
     }
