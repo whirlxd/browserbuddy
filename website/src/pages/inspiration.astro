@@ -3,381 +3,403 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="BrowserBuddy - Build your own Browser extension">
-	<main>
-		<div class="cta-text">
-			<h1>Looking for inspiration?</h1>
-			<h2>Check out what other Hack Clubbers are making.</h2>
-		</div>
-		<div>
-			<h2> Let's help you come up with an extension idea </h2>
-					</div>
+  <main>
+    <div class="cta-text">
+      <h1>Looking for inspiration?</h1>
+      <h2>Check out what other Hack Clubbers are making.</h2>
+    </div>
+    <div>
+      <h2>Let's help you come up with an extension idea</h2>
+    </div>
 
-<form id="ideas-form">
-					<input id="problem" name="problem" placeholder="Write the problem you're facing here" />
-				<button id="generate-ideas-btn" type="submit"> Generate Ideas </button>
-			</form>
+    <form id="ideas-form">
+      <input
+        id="problem"
+        name="problem"
+        placeholder="Write the problem you're facing here"
+      />
+      <button id="generate-ideas-btn" type="submit"> Generate Ideas </button>
+    </form>
 
+    <svg
+      class="chevron-down"
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#ec3750"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="lucide lucide-chevron-down"
+      ><path fill="" d="m6 9 6 6 6-6"></path></svg
+    >
+  </main>
 
-		<svg class="chevron-down" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ec3750"  stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path fill="" d="m6 9 6 6 6-6"/></svg>
-	</main>
+  <div class="info">
+    <div id="suggestions-placeholder">
+      <h2>Suggestions will appear here...</h2>
+    </div>
+    <div id="responses"></div>
 
-	<div class="info">
-		<div id="suggestions-placeholder">
-			<h2>Suggestions will appear here... </h2>
-		</div>
-		<div id="responses">
-		</div>
-
-		<div class="inspiration-cta">
-			<h3>
-				Looking for more inspiration? Join <a style="display:inline;"
-					href="https://hackclub.slack.com/archives/C07MQBTNVRU"
-					>#browser-buddy</a
-				> to chat with other Hack Clubbers.
-			</h3>
-		</div>
-	</div>
+    <div class="inspiration-cta">
+      <h3>
+        Looking for more inspiration? Join <a
+          style="display:inline;"
+          href="https://hackclub.slack.com/archives/C07MQBTNVRU"
+          >#browser-buddy</a
+        > to chat with other Hack Clubbers.
+      </h3>
+    </div>
+  </div>
 </Layout>
 
 <script>
-interface Extension {
-	name: string, 
-	description: string,
-	features: string[],
-	uniqueTwist: string
-}
+  interface Extension {
+    name: string;
+    description: string;
+    features: string[];
+    uniqueTwist: string;
+  }
 
-const ideasForm = document.getElementById("ideas-form") as HTMLFormElement;
+  const ideasForm = document.getElementById("ideas-form") as HTMLFormElement;
 
-ideasForm.addEventListener("submit", submitHandler);
+  ideasForm.addEventListener("submit", submitHandler);
 
-function showButtonLoading() {
-	const text = "Generate Ideas";
-	let loadCount = 1;
+  function showButtonLoading() {
+    const text = "Generate Ideas";
+    let loadCount = 1;
 
-	const generateIdeasBtn = document.getElementById("generate-ideas-btn") as HTMLButtonElement;
+    const generateIdeasBtn = document.getElementById(
+      "generate-ideas-btn",
+    ) as HTMLButtonElement;
 
-	const loadInterval =  setInterval(() => {
-		loadCount = (loadCount + 1) % 4;
+    const loadInterval = setInterval(() => {
+      loadCount = (loadCount + 1) % 4;
 
-		generateIdeasBtn.innerText = text + new Array(loadCount).fill(".").join("");
-	}, 500);
-	const stopLoading = () => {
-		clearInterval(loadInterval);
-		generateIdeasBtn.innerText = text;
-	};
-	return stopLoading;
+      generateIdeasBtn.innerText =
+        text + new Array(loadCount).fill(".").join("");
+    }, 500);
+    const stopLoading = () => {
+      clearInterval(loadInterval);
+      generateIdeasBtn.innerText = text;
+    };
+    return stopLoading;
+  }
 
-}
+  async function submitHandler(event: SubmitEvent) {
+    event.preventDefault();
 
-async function submitHandler(event: SubmitEvent) {
-	event.preventDefault();
+    const problemStatement = (
+      document.getElementById("problem") as HTMLInputElement
+    ).value;
 
-	const problemStatement = (document.getElementById("problem") as HTMLInputElement).value;
+    const stopLoadingFn = showButtonLoading();
+    fetch("/api/ideas", {
+      method: "POST",
+      body: JSON.stringify({
+        problem: problemStatement,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const extensions = data.extensions;
+        displayResponses(extensions);
+        stopLoadingFn();
+      });
+  }
 
-	const stopLoadingFn = showButtonLoading();
-	fetch("/api/ideas", {
-		method: "POST",
-		body: JSON.stringify({
-			problem: problemStatement
-		})
-	}).then(response => response.json())
-	.then(data => {
-			const extensions = data.extensions;
-			displayResponses(extensions);
-			stopLoadingFn();
-			
-		});
+  function displayResponses(responses: Extension[]) {
+    const responsesParent = document.getElementById(
+      "responses",
+    ) as HTMLDivElement;
 
-}
+    // clear the contents to put in the new suggestions
+    responsesParent.innerHTML = "";
 
-function displayResponses(responses: Extension[]) {
-	const responsesParent = document.getElementById("responses") as HTMLDivElement;
+    responses.forEach((response) => {
+      let responseEl = document.createElement("div");
+      responseEl.classList.add("suggestion");
 
-	// clear the contents to put in the new suggestions
-	responsesParent.innerHTML = '';
-	
-	responses.forEach(response => {
-		let responseEl = document.createElement("div");
-		responseEl.classList.add("suggestion")
+      let title = document.createElement("h3");
+      title.innerText = response.name;
+      responseEl.appendChild(title);
 
-		let title = document.createElement("h3");
-		title.innerText = response.name;
-		responseEl.appendChild(title);
+      let description = document.createElement("p");
+      description.innerText = response.description;
+      responseEl.appendChild(description);
 
-		let description = document.createElement("p");
-		description.innerText = response.description;
-		responseEl.appendChild(description);
+      let features = document.createElement("ul");
+      response.features.forEach((feature) => {
+        let featureEl = document.createElement("li");
+        featureEl.innerText = feature;
 
-		let features = document.createElement("ul")
-		response.features.forEach(feature => {
-			let featureEl = document.createElement("li");
-			featureEl.innerText = feature;
+        features.appendChild(featureEl);
+      });
+      responseEl.appendChild(features);
 
-			features.appendChild(featureEl);
-		});
-		responseEl.appendChild(features);
+      let twist = document.createElement("em");
+      twist.innerText = `Twist: ${response.uniqueTwist}`;
+      responseEl.appendChild(twist);
 
-		let twist = document.createElement("em");
-		twist.innerText = `Twist: ${response.uniqueTwist}`;
-		responseEl.appendChild(twist);
-	
-		responsesParent.appendChild(responseEl);
-	});
+      responsesParent.appendChild(responseEl);
+    });
 
-	(document.getElementById("suggestions-placeholder") as HTMLDivElement).style.display = "none";
-}
+    (
+      document.getElementById("suggestions-placeholder") as HTMLDivElement
+    ).style.display = "none";
+  }
 </script>
 
 <style>
-	main {
-		margin: auto;
-		padding: 0.5rem;
-		width: 60%;
-		max-width: calc(100% - 2rem);
-		height: 90vh;
-		font-size: 20px;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-evenly;
-		align-items: center;
-	}
-	a {
-		text-decoration: none;
-		color: blue;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
+  main {
+    margin: auto;
+    padding: 0.5rem;
+    width: 60%;
+    max-width: calc(100% - 2rem);
+    height: 90vh;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+  a {
+    text-decoration: none;
+    color: blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-	a h2 {
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-		width: fit-content;
-	}
-	.cta-text {
-		width: 100%;
-		height: fit-content;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		text-align: center;
-	}
+  a h2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+  }
+  .cta-text {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-	.cta-text h2 {
-		font-size: 3rem;
-		color: white;
-		padding: 0.2rem 1.5rem;
-		transform: rotate(-4deg);
-		margin: 0;
-		background-color: var(--hc-green);
-		z-index: 1;
-	}
+  .cta-text h2 {
+    font-size: 3rem;
+    color: white;
+    padding: 0.2rem 1.5rem;
+    transform: rotate(-4deg);
+    margin: 0;
+    background-color: var(--hc-green);
+    z-index: 1;
+  }
 
-	.cta-text h3 {
-		font-size: 1.5rem;
-		color: white;
-		padding: 0.5rem 1.6rem;
-		/* transform: rotate(3deg); */
-		margin: 0;
-		background-color: var(--hc-purple);
-		z-index: 1;
-	}
+  .cta-text h3 {
+    font-size: 1.5rem;
+    color: white;
+    padding: 0.5rem 1.6rem;
+    /* transform: rotate(3deg); */
+    margin: 0;
+    background-color: var(--hc-purple);
+    z-index: 1;
+  }
 
-	main div.cta-text:last-child {
-		transform: rotate(-3deg);
-	}
+  main div.cta-text:last-child {
+    transform: rotate(-3deg);
+  }
 
-	main h1 {
-		font-size: 6rem;
-		/* font-family: "Tiny5", sans-serif; */
-		/* font-family: "DepartureMono", sans-serif; */
-		/* color: #ff8000; */
-		color: white;
-		padding: 0.2rem 1.5rem;
-		transform: rotate(5deg);
-		margin: 0 0 2rem 0;
-		background-color: #ec3750;
-		z-index: 2;
-	}
+  main h1 {
+    font-size: 6rem;
+    /* font-family: "Tiny5", sans-serif; */
+    /* font-family: "DepartureMono", sans-serif; */
+    /* color: #ff8000; */
+    color: white;
+    padding: 0.2rem 1.5rem;
+    transform: rotate(5deg);
+    margin: 0 0 2rem 0;
+    background-color: #ec3750;
+    z-index: 2;
+  }
 
-	main .cta-item-container {
-		position: relative;
-		display: flex;
-		/* justify-content: space-between; */
-		width: 100%;
-		z-index: 3;
-	}
+  main .cta-item-container {
+    position: relative;
+    display: flex;
+    /* justify-content: space-between; */
+    width: 100%;
+    z-index: 3;
+  }
 
-	.hammer {
-		top: 10%;
-		justify-content: flex-start;
-		align-items: flex-start;
-	}
+  .hammer {
+    top: 10%;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 
-	#hammer {
-		animation-name: hammer-hit;
-		animation-timing-function: ease-in-out;
-		animation-duration: 0.8s;
-		animation-delay: 0.5s;
-		animation-iteration-count: infinite;
-		animation-direction: forwards;
-	}
+  #hammer {
+    animation-name: hammer-hit;
+    animation-timing-function: ease-in-out;
+    animation-duration: 0.8s;
+    animation-delay: 0.5s;
+    animation-iteration-count: infinite;
+    animation-direction: forwards;
+  }
 
-	@keyframes hammer-hit {
-		0% {
-			transform: rotate(0deg);
-		}
+  @keyframes hammer-hit {
+    0% {
+      transform: rotate(0deg);
+    }
 
-		25% {
-			transform: rotate(-20deg);
-		}
+    25% {
+      transform: rotate(-20deg);
+    }
 
-		50% {
-			transform: rotate(0deg);
-		}
+    50% {
+      transform: rotate(0deg);
+    }
 
-		75% {
-			transform: rotate(20deg);
-		}
+    75% {
+      transform: rotate(20deg);
+    }
 
-		100% {
-			transform: rotate(0deg);
-		}
-	}
+    100% {
+      transform: rotate(0deg);
+    }
+  }
 
-	.cursor {
-		top: -18%;
-		right: 5%;
-		justify-content: flex-end;
-		align-items: flex-end;
-		z-index: 2;
-	}
+  .cursor {
+    top: -18%;
+    right: 5%;
+    justify-content: flex-end;
+    align-items: flex-end;
+    z-index: 2;
+  }
 
-	main div .browsers {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-	}
+  main div .browsers {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-	main form {
-		width: 100%;
-		max-width: 800px;
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-	}
+  main form {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
 
-	main form * {
-		margin: 0.5rem;
-	}
+  main form * {
+    margin: 0.5rem;
+  }
 
-	main form input,
-	main form button {
-		padding: 1rem;
-		font-size: 1.2rem;
-	}
+  main form input,
+  main form button {
+    padding: 1rem;
+    font-size: 1.2rem;
+  }
 
-	main form input {
-		font-weight: bold;
-		background: transparent;
-		border-radius: 0.5rem;
-		border: 3px solid var(--hc-red);
-		width: 60%;
-		font-size: 1;
-	}
+  main form input {
+    font-weight: bold;
+    background: transparent;
+    border-radius: 0.5rem;
+    border: 3px solid var(--hc-red);
+    width: 60%;
+    font-size: 1;
+  }
 
-	main form button {
-		transition: all 0.2s ease-in-out;
-		width: 40%;
-	}
+  main form button {
+    transition: all 0.2s ease-in-out;
+    width: 40%;
+  }
 
-	main form button:active {
-		transform: scale(0.7);
-	}
+  main form button:active {
+    transform: scale(0.7);
+  }
 
-	main .cta-icons {
-		width: 15%;
-	}
+  main .cta-icons {
+    width: 15%;
+  }
 
-	input:focus {
-		outline: none;
-	}
+  input:focus {
+    outline: none;
+  }
 
-	button {
-		color: white;
-		border-radius: 0.5rem;
-		border: 2px solid var(--hc-red);
-		font-size: 1;
-		background-color: var(--hc-red);
-		font-weight: bold;
-	}
+  button {
+    color: white;
+    border-radius: 0.5rem;
+    border: 2px solid var(--hc-red);
+    font-size: 1;
+    background-color: var(--hc-red);
+    font-weight: bold;
+  }
 
-	.cta {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
+  .cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-	.info h2 {
-		border-bottom: solid 10px var(--hc-red);
-		width: fit-content;
-	}
+  .info h2 {
+    border-bottom: solid 10px var(--hc-red);
+    width: fit-content;
+  }
 
-	.inspiration-cta {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		width: 100%;
-		border-bottom: solid 10px var(--hc-red);
-	}
+  .inspiration-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-bottom: solid 10px var(--hc-red);
+  }
 
-	.inspiration-cta h3 {
-		width: 100%;
-		text-align: center;
-	}
+  .inspiration-cta h3 {
+    width: 100%;
+    text-align: center;
+  }
 
-	.info-cards {
-		display: flex;
-		justify-content: space-evenly;
-		align-items: center;
-	}
+  .info-cards {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
 
-	.faq {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		list-style-type: "? - ";
-	}
+  .faq {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    list-style-type: "? - ";
+  }
 
-	.sample-cards {
-		display: flex;
-		justify-content: space-evenly;
-		align-items: center;
-	}
+  .sample-cards {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+  }
 
-	#suggestions-placeholder {
-width: 100%;
-	display: flex;
-justify-content: center;
-align-items: center;
-}
+  #suggestions-placeholder {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-	@media screen and (max-width: 1000px) {
-		.chevron-down {
-		display: none;
-}
-	}
+  @media screen and (max-width: 1000px) {
+    .chevron-down {
+      display: none;
+    }
+  }
 
-	@media screen and (max-width: 800px) {
-		#responses {
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-		}
-		.info {
-			margin-top: 10em;
-}
-	}
-
+  @media screen and (max-width: 800px) {
+    #responses {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .info {
+      margin-top: 10em;
+    }
+  }
 </style>
