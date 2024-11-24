@@ -104,3 +104,44 @@ button:hover {
 #summary {
   line-height: 1.5;
 }
+
+/* Add to style.css */
+.instructions {
+  text-align: left;
+  background: #3b3a3a;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.instructions ol {
+  padding-left: 20px;
+}
+
+.instructions li {
+  margin-bottom: 8px;
+}
+
+.instructions a {
+  color: #a29bfe;
+  text-decoration: none;
+}
+
+.instructions a:hover {
+  text-decoration: underline;
+}
+
+.loading-spinner {
+  border: 4px solid #3b3a3a;
+  border-top: 4px solid #a29bfe;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

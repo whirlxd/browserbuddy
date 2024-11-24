@@ -105,8 +105,29 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
       return;
     }
     
-    const result = await summarizeText(info.selectionText);
-    chrome.storage.local.set({ summary: result.summary, keypoints: result.keypoints });
+    // Show loading state
+    chrome.storage.local.set({ isLoading: true });
     chrome.action.openPopup();
+    
+    const result = await summarizeText(info.selectionText);
+    chrome.storage.local.set({ 
+      summary: result.summary, 
+      keypoints: result.keypoints,
+      isLoading: false 
+    });
+  }
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === "SUMMARIZE") {
+    summarizeText(request.text).then(result => {
+      chrome.storage.local.set({
+        summary: result.summary,
+        keypoints: result.keypoints,
+        isLoading: false
+      });
+      sendResponse(result);
+    });
+    return true; // Will respond asynchronously
   }
 });
