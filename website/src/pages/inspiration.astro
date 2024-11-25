@@ -1,5 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Samplecard from "../components/samplecard.astro";
+import { projects } from "../content";
 ---
 
 <Layout title="BrowserBuddy - Build your own Browser extension">
@@ -41,6 +43,20 @@ import Layout from "../layouts/Layout.astro";
       <h2>Suggestions will appear here...</h2>
     </div>
     <div id="responses"></div>
+
+    <h2>Checkout Amazing Projects other Hack Clubbers have made</h2>
+    <div class="showcase">
+      {projects.map(project => (
+        <Samplecard 
+          name={project.name}
+          description={project.description}
+          authorName={project.authorName}
+          authorGitHub={project.authorGitHub}
+          pullRequest={project.pullRequest}
+          image={project.bannerImage}
+        />
+      ))}
+    </div>
 
     <div class="inspiration-cta">
       <h3>
@@ -164,6 +180,12 @@ import Layout from "../layouts/Layout.astro";
     text-align: center;
   }
 
+  .showcase {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1em;
+  }
+
   @media screen and (max-width: 1000px) {
     .chevron-down {
       display: none;
@@ -188,7 +210,7 @@ import Layout from "../layouts/Layout.astro";
       width: 100%;
     }
 
-    #responses {
+    #responses, .showcase {
       display: flex;
       flex-direction: column;
       align-items: center;
