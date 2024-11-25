@@ -22,7 +22,5 @@ pnpm-debug.log*
 
 # Code Editors
 .idea/
-.vscode/
-
 
 .vercel
