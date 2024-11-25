@@ -47,6 +47,10 @@ async function summarizeText(text) {
       keypoints: ["API key not configured"]
     };
   }
+  const MAX_CHARS = 1000;
+  const truncatedText = text.length > MAX_CHARS ? 
+    text.substring(0, MAX_CHARS) + "..." : 
+    text;
   
   try {
     const response = await fetch(SUMMARIZE_API_URL, {
@@ -56,7 +60,7 @@ async function summarizeText(text) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        inputs: text,
+        inputs: truncatedText,
         parameters: {
           max_length: 150,
           min_length: 40,
