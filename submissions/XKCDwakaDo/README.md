@@ -1,4 +1,4 @@
-# Custom New Tab Page
+# XKCDwakaDo
 
 A minimalist and customizable new tab page for your browser with smooth animations, dark mode support, Wakatime integration, and xkcd comics.
 
@@ -16,6 +16,8 @@ A minimalist and customizable new tab page for your browser with smooth animatio
 2. Open your browser's settings and navigate to the extensions page.
 3. Click load unpacked extension and open this repository.
 4. Open a new tab to see it in action!
+
+Need to update after posted on chrome web store.
 
 ## Usage
 

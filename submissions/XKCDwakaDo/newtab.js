@@ -17,8 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (!name) {
       // Prompt the user for input
-      let userInput = prompt("Please enter your name:").toLowerCase();
-      
+      let userInput = prompt("Please enter your name:");
+      if (userInput != null) {
+        userInput = userInput.toLowerCase();
+      }
       // Store the input in localStorage
       localStorage.setItem('name', userInput);
       name = userInput;

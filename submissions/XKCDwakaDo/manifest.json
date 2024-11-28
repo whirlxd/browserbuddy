@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Custom New Tab",
+  "name": "XKCDwakaDo",
   "version": "1.0",
-  "description": "A custom new tab page extension",
+  "description": "A custom new tab page extension with XKCD and WakaTime integrations along with a todo list",
   "background": {
     "service_worker": "background.js"
   },
