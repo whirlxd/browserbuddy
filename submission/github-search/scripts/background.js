@@ -9,39 +9,53 @@ async function refreshRepos() {
   try {
     const repos = [];
     if (searchSettings.personalRepos) {
-      const personalReposRaw = await fetch(
-        "https://api.github.com/user/repos?per_page=100",
-        {
-          headers: {
-            Authorization: `token ${token}`,
-            Accept: "application/vnd.github.v3+json",
-          },
-        }
-      ).then((response) => response.json());
+      let page = 1;
+      let hasMorePages = true;
+      while (hasMorePages) {
+        const personalReposRaw = await fetch(
+          `https://api.github.com/user/repos?per_page=100&page=${page}`,
+          {
+            headers: {
+              Authorization: `token ${token}`,
+              Accept: "application/vnd.github.v3+json",
+            },
+          }
+        ).then((response) => response.json());
 
-      const personalRepos = personalReposRaw.map((repo) => ({
-        name: repo.name,
-        url: repo.html_url,
-      }));
-      repos.push(...personalRepos);
+        const personalRepos = personalReposRaw.map((repo) => ({
+          name: repo.name,
+          url: repo.html_url,
+        }));
+        repos.push(...personalRepos);
+
+        hasMorePages = personalReposRaw.length === 100;
+        page++;
+      }
     }
 
     if (searchSettings.starredRepos) {
-      const starredReposRaw = await fetch(
-        "https://api.github.com/user/starred?per_page=100",
-        {
-          headers: {
-            Authorization: `token ${token}`,
-            Accept: "application/vnd.github.v3+json",
-          },
-        }
-      ).then((response) => response.json());
+      let page = 1;
+      let hasMorePages = true;
+      while (hasMorePages) {
+        const starredReposRaw = await fetch(
+          `https://api.github.com/user/starred?per_page=100&page=${page}`,
+          {
+            headers: {
+              Authorization: `token ${token}`,
+              Accept: "application/vnd.github.v3+json",
+            },
+          }
+        ).then((response) => response.json());
 
-      const starredRepos = starredReposRaw.map((repo) => ({
-        name: repo.name,
-        url: repo.html_url,
-      }));
-      repos.push(...starredRepos);
+        const starredRepos = starredReposRaw.map((repo) => ({
+          name: repo.name,
+          url: repo.html_url,
+        }));
+        repos.push(...starredRepos);
+
+        hasMorePages = starredReposRaw.length === 100;
+        page++;
+      }
     }
 
     if (searchSettings.recentRepos) {
