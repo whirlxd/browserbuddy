@@ -1,11 +1,17 @@
 ---
-const { name, image, description } = Astro.props;
+const { name, image, description, authorName, authorGitHub, pullRequest } = Astro.props;
 ---
 
 <div class="browser-extension-card">
   <img src={image} alt={name} class="extension-image" />
-  <h3 class="extension-name">{name}</h3>
-  <p class="extension-description">{description}</p>
+  <div>
+    <h2 class="extension-name">{name}</h2>
+    <p class="extension-description">{description}</p>
+  </div>
+  <span>
+    <a href={pullRequest}>Pull Request</a>
+    <p>by <a href={authorGitHub}>{authorName}</a></p>
+  </span>
 </div>
 
 <style>
@@ -13,12 +19,19 @@ const { name, image, description } = Astro.props;
     border: 1px solid var(--hc-red);
     background-color: var(--hc-red);
     color: white;
-    /* border-radius: 8px; */
+    border-radius: 12px;
     padding: 2rem;
     max-width: 300px;
-    height: 600px;
     transition: all 0.2s ease-in-out;
     margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .browser-extension-card * {
+    width: 100%;
   }
 
   .browser-extension-card:hover {
@@ -39,8 +52,38 @@ const { name, image, description } = Astro.props;
     margin-bottom: 0.5rem;
   }
 
-  .extension-description {
-    font-size: 1.5rem;
-    /* color: #666; */
+  span {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  a {
+    box-sizing: border-box;
+    color: white;
+    text-decoration: underline;
+  }
+
+  span > * {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    margin: 0;
+  }
+
+  span > p {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+  } 
+
+  span > p > a {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    width: fit-content;
+    margin-left: 3px;
   }
 </style>
