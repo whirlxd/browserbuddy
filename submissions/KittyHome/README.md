@@ -1,3 +1,10 @@
+# Kitty Home
+
+This extension replaces the new tab page with a cute cat image, a fun cat fact, and your most visited tabs. Not only that, but if you click on the icon, a pop up menu appears with buttons to cat themed productivity tools (plus a few fun ones)!
+
+
+### Image Credits:
+
 - <https://pixabay.com/photos/simba-cat-portrait-cat-photography-8618301/>
 
 - <https://pixabay.com/photos/european-shorthair-cat-animal-8601492/>
