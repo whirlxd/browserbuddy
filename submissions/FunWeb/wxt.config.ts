@@ -6,9 +6,9 @@ export default defineConfig({
 	modules: ["@wxt-dev/module-vue", "@wxt-dev/auto-icons"],
 
 	manifest: {
-		name: "Extension Name",
-		description: "Extension Description should be written here",
-		permissions: ["storage"],
+		name: "FunWeb",
+		description: "Have Fun on the Web",
+		permissions: ["storage", "scripting"],
 		host_permissions:["https://*/*"]
 	},
 
