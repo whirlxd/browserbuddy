@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Cat New Tab",
+    "name": "Kitty Home",
     "version": "1.0",
     "description":"This extension will change the new tab page to show a random cat image and cat fact",
     "chrome_url_overrides": {
