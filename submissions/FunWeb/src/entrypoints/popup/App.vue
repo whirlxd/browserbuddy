@@ -50,7 +50,7 @@ const sendScriptToBackground = (scriptName: string) => {
       </li>
     </ul>
     <button @click="sendMessage('reloadTab')"
-            class="mt-4 bg-blue-500 text-white p-2 rounded w-full">Reload Tab (To undo changes)</button>
+            class="mt-4 bg-blue-500 text-white p-2 rounded w-full">Undo Changes (reload)</button>
 
   </div>
 </template>
