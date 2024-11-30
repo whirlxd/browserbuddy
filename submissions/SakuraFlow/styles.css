@@ -1,0 +1,116 @@
+/* General body styling for a minimalist, light Sakura vibe */
+body {
+  font-family: 'Yu Gothic', 'Meiryo', sans-serif; /* Soft Japanese-inspired font */
+  background-color: #F9F7F2; /* Light, creamy background (like soft paper) */
+  color: #5D5D5D; /* Darker gray text for contrast */
+  padding: 15px;
+  margin: 0;
+  text-align: center;
+  border-radius: 10px;
+  width: 300px;
+  height: auto;
+  box-shadow: 0 4px 20px rgba(255, 192, 203, 0.2); /* Soft glow effect like sakura petals */
+}
+
+/* Title styling with Sakura-inspired font style */
+h3 {
+  font-size: 1.6em;
+  margin-bottom: 20px;
+  color: #F8A7D3; /* Soft pastel pink (Sakura color) */
+  text-shadow: 0 0 10px rgba(248, 167, 211, 0.8); /* Soft pink glowing effect */
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+
+/* Search input box styling */
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  background-color: #F5F1F1; /* Very light pinkish background */
+  color: #5D5D5D; /* Soft gray text */
+  border: 1px solid #F8A7D3; /* Soft pink border */
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 1em;
+  text-align: center;
+  font-weight: 300;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+  background-color: #FFFFFF; /* White on focus for a clean look */
+  outline: none;
+  border: 1px solid #F8A7D3; /* Maintain pink focus border */
+  box-shadow: 0 0 8px rgba(248, 167, 211, 0.5); /* Focus glow effect */
+}
+
+/* Button styling (close selected tabs) */
+button {
+  padding: 12px;
+  background-color: #EDEDED; /* Soft light gray background */
+  color: #F8A7D3; /* Soft pink text */
+  border: 2px solid #F8A7D3; /* Light pink border */
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2em;
+  width: 100%;
+  margin-top: 25px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #F8A7D3; /* Soft pink background on hover */
+  color: #EDEDED; /* Light gray text */
+  box-shadow: 0 0 10px rgba(248, 167, 211, 0.6); /* Hover glow effect */
+}
+
+/* List styling for tabs (muted pastel colors) */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  font-size: 1em;
+}
+
+/* List item (tabs) styling */
+li {
+  padding: 10px;
+  margin: 8px 0;
+  background-color: #FAF9F6; /* Soft off-white background */
+  border-radius: 5px;
+  color: #5D5D5D; /* Muted gray text */
+  box-shadow: 0 0 5px rgba(255, 192, 203, 0.1); /* Light, soft shadow like petals */
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+li:hover {
+  background-color: #F8A7D3; /* Soft pink background on hover */
+  color: #FFFFFF; /* White text on hover */
+  transform: scale(1.05); /* Gentle zoom effect on hover */
+}
+
+/* Checkbox styling */
+input[type="checkbox"] {
+  margin-right: 10px;
+  accent-color: #F8A7D3; /* Soft pink for checkboxes */
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #F8A7D3;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F5F1F1;
+}

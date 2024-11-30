@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tab Manager</title>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 280px;
+      padding: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      padding: 5px;
+      margin: 5px 0;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <h3>Tab Manager</h3>
+  <input type="text" id="search" placeholder="Search tabs..." style="width: 100%; padding: 5px;"/>
+  <ul id="tabs-list"></ul>
+  <button id="close-selected">Close Selected Tabs</button>
+  <script src="popup.js"></script>
+</body>
+</html>
