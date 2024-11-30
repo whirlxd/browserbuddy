@@ -59,6 +59,12 @@ export default defineBackground(() => {
 					});
 				}
 			});
+		} else if (message.action == "reloadTab") {
+			browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
+				if (tabs[0] && tabs[0].id !== undefined) {
+					browser.tabs.reload(tabs[0].id);
+				}
+			});
 		}
 	});
 });
