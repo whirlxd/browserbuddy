@@ -3,6 +3,9 @@ import { ref } from "vue";
 
 const feedbackMessage = ref(""); // Feedback message state
 
+const sendMessage = (action: string) => {
+  chrome.runtime.sendMessage({action: action})
+}
 const sendScriptToBackground = (scriptName: string) => {
   chrome.runtime.sendMessage({
     action: "executeFunScript",
@@ -26,21 +29,29 @@ const sendScriptToBackground = (scriptName: string) => {
     <!-- Button List -->
     <ul class="button-list w-full space-y-2">
       <li>
-        <button @click="sendScriptToBackground('upsideDownWeb')" class="fun-button">Upside Down Web</button>
+        <button @click="sendScriptToBackground('upsideDownWeb')"
+                class="fun-button">Upside Down Web</button>
       </li>
       <li>
-        <button @click="sendScriptToBackground('noVisualStuff')" class="fun-button">No Visual Stuff</button>
+        <button @click="sendScriptToBackground('noVisualStuff')"
+                class="fun-button">No Visual Stuff</button>
       </li>
       <li>
-        <button @click="sendScriptToBackground('shakeOnType')" class="fun-button">Shake on Type</button>
+        <button @click="sendScriptToBackground('shakeOnType')"
+                class="fun-button">Shake on Type</button>
       </li>
       <li>
-        <button @click="sendScriptToBackground('blockyWeb')" class="fun-button">Blocky Web</button>
+        <button @click="sendScriptToBackground('blockyWeb')"
+                class="fun-button">Blocky Web</button>
       </li>
       <li>
-        <button @click="sendScriptToBackground('terminalWeb')" class="fun-button">Terminal Web</button>
+        <button @click="sendScriptToBackground('terminalWeb')"
+                class="fun-button">Terminal Web</button>
       </li>
     </ul>
+    <button @click="sendMessage('reloadTab')"
+            class="mt-4 bg-blue-500 text-white p-2 rounded w-full">Reload Tab (To undo changes)</button>
+
   </div>
 </template>
 
