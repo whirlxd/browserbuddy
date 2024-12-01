@@ -1,5 +1,3 @@
-import { OPENAI_API_KEY } from "./api-key.js";
-
 class FocusFlow {
   constructor() {
     this.initializeElements();
@@ -7,6 +5,11 @@ class FocusFlow {
     this.loadSettings();
     this.initializePomodoro();
     this.initializeTaskList();
+    this.apiKeyInput = document.getElementById("apiKeyInput");
+    this.apiKeyError = document.getElementById("apiKeyError");
+    this.apiKeyStatus = document.getElementById("apiKeyStatus");
+    this.saveApiKeyButton = document.getElementById("saveApiKey");
+    this.initializeApiKey();
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
       if (namespace === "sync" && changes.pomodoroState) {
@@ -46,7 +49,6 @@ class FocusFlow {
   }
 
   initializeEventListeners() {
-    // Flow Mode Toggle
     this.flowToggle.addEventListener("change", () => this.updateFlowStatus());
 
     // Switching Tabs
@@ -101,23 +103,77 @@ class FocusFlow {
     }
   }
 
-  updateFlowStatus() {
+  async updateFlowStatus() {
     const isEnabled = this.flowToggle.checked;
-    const pinnedTask = this.getPinnedTask();
+    const settings = await chrome.storage.sync.get("apiKey");
 
-    if (isEnabled && !this.isRunning) {
-      this.startTimer();
+    if (isEnabled && !settings.apiKey) {
+      this.flowToggle.checked = false;
+      alert("Please add an API key in Settings before enabling Focus Flow");
+
+      this.tabButtons.forEach((btn) => btn.classList.remove("active"));
+      this.tabContents.forEach((content) => content.classList.remove("active"));
+
+      const settingsTab = document.querySelector('[data-tab="settings"]');
+      settingsTab.classList.add("active");
+      document.getElementById("settings-tab").classList.add("active");
+      return;
     }
 
-    chrome.storage.sync.set({
-      isEnabled,
-      currentTask: pinnedTask?.text || "",
-    });
+    // Testing the API Key
+    if (isEnabled) {
+      try {
+        const response = await fetch(
+          "https://api.openai.com/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${settings.apiKey}`,
+            },
+            body: JSON.stringify({
+              model: "gpt-4",
+              messages: [{ role: "user", content: "test" }],
+            }),
+          }
+        );
 
+        if (!response.ok) {
+          this.flowToggle.checked = false;
+          alert(
+            "Your API key appears to be invalid. Please update it in Settings."
+          );
+          return;
+        }
+      } catch (error) {
+        this.flowToggle.checked = false;
+        alert(
+          "Your API key appears to be invalid. Please update it in Settings."
+        );
+        return;
+      }
+    }
+
+    await chrome.storage.sync.set({ isEnabled });
     this.statusDiv.textContent = isEnabled
-      ? "Focus Flow is active"
-      : "Focus Flow is disabled";
+      ? "Focus Mode: On"
+      : "Focus Mode: Off";
     this.statusDiv.className = `status ${isEnabled ? "active" : "inactive"}`;
+
+    if (isEnabled) {
+      this.isRunning = true;
+      this.startButton.textContent = "Pause";
+      chrome.runtime.sendMessage({ type: "START_TIMER" });
+      this.savePomodoroState();
+    } else {
+      this.isRunning = false;
+      this.isBreak = false;
+      this.timeLeft = parseInt(this.workDuration.value) * 60;
+      this.startButton.textContent = "Start";
+      chrome.runtime.sendMessage({ type: "RESET_TIMER" });
+      this.updateTimerDisplay();
+      this.savePomodoroState();
+    }
   }
 
   // Pomodoro Timer
@@ -370,6 +426,69 @@ class FocusFlow {
     }
 
     await chrome.storage.sync.set({ tasks });
+  }
+
+  async initializeApiKey() {
+    const settings = await chrome.storage.sync.get("apiKey");
+    if (settings.apiKey) {
+      this.apiKeyInput.value = settings.apiKey;
+    }
+
+    this.saveApiKeyButton.addEventListener("click", async () => {
+      const apiKey = this.apiKeyInput.value.trim();
+
+      await chrome.storage.sync.set({ apiKey });
+      this.apiKeyStatus.textContent = "API key saved!";
+
+      const isEnabled = await chrome.storage.sync.get("isEnabled");
+      if (isEnabled.isEnabled) {
+        this.flowToggle.checked = false;
+        await this.updateFlowStatus();
+      }
+
+      if (apiKey) {
+        this.apiKeyError.textContent = "";
+        this.apiKeyStatus.textContent = "Checking API key...";
+        this.saveApiKeyButton.disabled = true;
+
+        try {
+          const response = await fetch(
+            "https://api.openai.com/v1/chat/completions",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`,
+              },
+              body: JSON.stringify({
+                model: "gpt-4",
+                messages: [{ role: "user", content: "test" }],
+              }),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error("Invalid API key");
+          }
+
+          this.apiKeyError.textContent = "";
+          this.apiKeyStatus.textContent = "API key is valid!";
+        } catch (error) {
+          this.apiKeyError.textContent =
+            "Warning: This API key appears to be invalid";
+        } finally {
+          this.saveApiKeyButton.disabled = false;
+          setTimeout(() => {
+            this.apiKeyStatus.textContent = "";
+          }, 3000);
+        }
+      }
+    });
+
+    this.apiKeyInput.addEventListener("input", () => {
+      this.apiKeyError.textContent = "";
+      this.apiKeyStatus.textContent = "";
+    });
   }
 }
 

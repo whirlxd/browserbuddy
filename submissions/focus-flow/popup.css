@@ -241,3 +241,63 @@ input:checked + .slider:before {
   background: #fed7d7;
   color: #9b2c2c;
 }
+
+.settings-container {
+  padding: 16px;
+}
+
+.api-key-input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.api-key-error {
+  color: #e53e3e;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.api-key-instructions {
+  background: #f7fafc;
+  padding: 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.api-key-instructions ol {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.api-key-instructions li {
+  margin-bottom: 4px;
+}
+
+.api-key-instructions a {
+  color: #4299e1;
+  text-decoration: none;
+}
+
+.api-key-instructions a:hover {
+  text-decoration: underline;
+}
+
+.api-key-instructions .note {
+  color: #718096;
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.api-key-status {
+  color: #4a5568;
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.settings-container button {
+  margin-bottom: 8px;
+  width: 100%;
+}

@@ -1,5 +1,3 @@
-import { OPENAI_API_KEY } from "./api-key.js";
-
 let timerInterval = null;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -112,11 +110,16 @@ async function handleTimerComplete() {
 
 async function checkRelevance(url, task) {
   try {
+    const settings = await chrome.storage.sync.get("apiKey");
+    if (!settings.apiKey) {
+      return { relevant: false, error: "No API key found" };
+    }
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${settings.apiKey}`,
       },
       body: JSON.stringify({
         model: "gpt-4",
@@ -144,17 +147,22 @@ async function checkRelevance(url, task) {
     return { relevant: relevanceResponse.relevant };
   } catch (error) {
     console.error("Error checking relevance:", error);
-    throw error;
+    return { relevant: false, error: error.message };
   }
 }
 
 async function checkExplanation(url, task, explanation) {
   try {
+    const settings = await chrome.storage.sync.get("apiKey");
+    if (!settings.apiKey) {
+      return { approved: false, error: "No API key found" };
+    }
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${settings.apiKey}`,
       },
       body: JSON.stringify({
         model: "gpt-4",
@@ -182,6 +190,6 @@ async function checkExplanation(url, task, explanation) {
     return { approved: explanationResponse.approved };
   } catch (error) {
     console.error("Error checking explanation:", error);
-    throw error;
+    return { approved: false, error: error.message };
   }
 }

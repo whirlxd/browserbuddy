@@ -170,6 +170,14 @@ async function checkPage() {
   ]);
 
   if (!settings.isEnabled) {
+    if (overlay) {
+      document.body.removeChild(overlay);
+      overlay = null;
+    }
+    if (explanationOverlay) {
+      document.body.removeChild(explanationOverlay);
+      explanationOverlay = null;
+    }
     return;
   }
 
@@ -204,7 +212,6 @@ async function checkPage() {
   }
 }
 
-// Checking websites & storage changes
 checkPage();
 
 let lastUrl = window.location.href;
