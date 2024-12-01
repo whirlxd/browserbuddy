@@ -1,46 +1,39 @@
-const calendarId = "YOUR_CALENDAR_ID"; // probably your gmail address
+let calendarId = "";
+let isExtensionActive = false;
 
 
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.action.setBadgeText({
-        text: "OFF",
+    chrome.action.setBadgeText({ text: "OFF" });
+    chrome.storage.sync.set({ isExtensionActive: false });
+
+    chrome.storage.sync.get("calendarId", (data) => {
+        calendarId = data.calendarId || "";
     });
-});
-
-
-chrome.action.onClicked.addListener(async (tab) => {
-    if (tab.url.includes("calendar.google.com")) {
-        const prevState = await chrome.action.getBadgeText({ tabId: tab.id });
-        const nextState = prevState === 'ON' ? 'OFF' : 'ON';
-
-        await chrome.action.setBadgeText({ 
-            tabId: tab.id, 
-            text: nextState 
-        });
-
-        if (nextState === 'ON') {
-            chrome.tabs.sendMessage(tab.id, {
-                action: "showAlert", 
-                message: `CTRL+CLICK to select individual (non "All day") events. If you have a block of back-to-back events you'd like to move, select the first event in the block, then SHIFT+CLICK the last event to select all the events in between as well. Move one of the selected events, then press CTRL+ENTER to move the rest.`
-            });
-
-            chrome.tabs.sendMessage(tab.id, { 
-                action: "toggleExtensionState", 
-                active: true
-            });
-
-        } else if (nextState === 'OFF') {
-            chrome.tabs.sendMessage(tab.id, { 
-                action: "toggleExtensionState", 
-                active: false
-            });
-        }
-    }
 });
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     
+    if (request.action === "toggleExtensionState") {
+        isExtensionActive = request.active;
+        const badgeText = isExtensionActive ? "ON" : "OFF";
+        chrome.action.setBadgeText({ text: badgeText });
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0].id) {
+                chrome.tabs.sendMessage(tabs[0].id, { action: "toggleExtensionState", active: isExtensionActive });
+            }
+        });
+    }
+
+    if (request.action === "updateCalendarId") {
+        calendarId = request.calendarId;
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0].id) {
+                chrome.tabs.sendMessage(tabs[0].id, { action: "updateCalendarId", calendarId });
+            }
+        });
+    }
+
     if (request.action === "getEventsList") {
         const { timeMin, timeMax } = request;
 
@@ -52,7 +45,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
 
             const url = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?timeMin=${encodeURIComponent(timeMin)}&timeMax=${encodeURIComponent(timeMax)}&singleEvents=true&orderBy=startTime`;
-            
             fetch(url, {
                 method: "GET",
                 headers: {
