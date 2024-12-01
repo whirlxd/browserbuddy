@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Focus Flow</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Focus Flow</h1>
+        <label class="switch">
+          <input type="checkbox" id="flowToggle" />
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="task">Tasks</button>
+        <button class="tab-btn" data-tab="pomodoro">Pomodoro</button>
+      </div>
+
+      <div class="tab-content active" id="task-tab">
+        <div class="current-focus">
+          <h3>Current Focus</h3>
+          <div id="currentFocusContainer"></div>
+        </div>
+        <div class="task-list" id="taskList">
+          <h3>Quick Tasks</h3>
+          <div class="tasks-container" id="tasksContainer"></div>
+          <button id="addTask" class="secondary-btn">+ Add Task</button>
+        </div>
+      </div>
+
+      <div class="tab-content" id="pomodoro-tab">
+        <div class="timer">
+          <div class="timer-status" id="timerStatus">Work Time</div>
+          <div class="time-display" id="timeDisplay">25:00</div>
+          <div class="timer-controls">
+            <button id="startTimer" class="primary-btn">Start</button>
+            <button id="resetTimer" class="secondary-btn">Reset</button>
+          </div>
+          <div class="timer-settings">
+            <label>
+              Work:
+              <input
+                type="number"
+                id="workDuration"
+                value="25"
+                min="1"
+                max="60"
+              />
+            </label>
+            <label>
+              Break:
+              <input
+                type="number"
+                id="breakDuration"
+                value="5"
+                min="1"
+                max="30"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div id="status" class="status"></div>
+    </div>
+    <script src="popup.js" type="module"></script>
+  </body>
+</html>
