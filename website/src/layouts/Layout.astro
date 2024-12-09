@@ -233,6 +233,7 @@ const { title } = Astro.props;
                 document.documentElement.scrollHeight -
                 document.documentElement.clientHeight;
               const opacity = 1 - scrollTop / maxScroll;
+              // @ts-ignore
               blinkingTreeEl.style.opacity = opacity;
             });
             observer.disconnect(); // Stop observing once the element is found
