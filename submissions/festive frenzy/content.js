@@ -33,9 +33,15 @@ function toggleSnowfall() {
   if (snowfallEnabled) {
     document.body.classList.add('snowfall');
     preloadedImage.style.opacity = '1';
+    if (!snowflakeInterval) snowflakeInterval = setInterval(createSnowflake, 50);
+    if (!emojiInterval) emojiInterval = setInterval(createEmoji, 4000);
   } else {
     document.body.classList.remove('snowfall');
     preloadedImage.style.opacity = '0';
+    clearInterval(snowflakeInterval);
+    clearInterval(emojiInterval);
+    snowflakeInterval = null;
+    emojiInterval = null;
   }
   chrome.storage.sync.set({ snowfallEnabled });
 }
@@ -52,7 +58,7 @@ function stopMusic() {
 }
 
 function createSnowflake() {
-  if (!snowfallEnabled) return;
+  if (!snowfallEnabled || !isTabFocused) return;
 
   const snowflake = document.createElement('div');
   snowflake.className = 'snowflake';
@@ -70,7 +76,8 @@ function createSnowflake() {
   });
 }
 
-setInterval(createSnowflake, 50);
+let snowflakeInterval = null;
+let emojiInterval = null;
 
 const snowStyle = document.createElement('style');
 snowStyle.textContent = `
@@ -107,16 +114,26 @@ const emojis = [
   '🎄', '🎅', '🦌', '❄️', '🌟', '🎁', '🎉', '🕯️', 
   'https://cloud-b5tnt582t-hack-club-bot.vercel.app/0christmas11q.png',
   'https://cloud-b5tnt582t-hack-club-bot.vercel.app/1christmas2q.png',
-  'https://cloud-b5tnt582t-hack-club-bot.vercel.app/4yay.gif'
+  'https://cloud-b5tnt582t-hack-club-bot.vercel.app/4yay.gif',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/0christmascatsq.png',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/1christmas1q.png',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/2christmas5q__1_.png',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/3christmas5q.png',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/4celebrate5q.gif',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/5christmascakeq.gif',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/6christmastree.png',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/7santa.gif',
+  'https://cloud-5fx3h95vw-hack-club-bot.vercel.app/8heart-8bit-1.gif'
 ];
 
 function createEmoji() {
   if (!snowfallEnabled || !isTabFocused) return;
+
   const emoji = document.createElement('div');
   emoji.className = 'emoji';
-  
+
   const emojiContent = emojis[Math.floor(Math.random() * emojis.length)];
-  
+
   if (emojiContent.includes('http')) {
     const img = document.createElement('img');
     img.src = emojiContent;
@@ -133,34 +150,28 @@ function createEmoji() {
   emoji.style.top = Math.random() * 100 + 'vh';
   emoji.style.opacity = 0;
   emoji.style.position = 'fixed';
-  emoji.style.animationDuration = '0.6s';
-  emoji.style.animationDelay = Math.random() * 1 + 's';
+  emoji.style.animation = 'emojiUp 2.3s forwards';
 
   document.body.appendChild(emoji);
-
-  emoji.style.animation = 'emojiUp 2.3s forwards';
 
   emoji.addEventListener('animationend', () => {
     emoji.remove();
   });
 }
 
-setInterval(createEmoji, 4000);
-
 const emojiStyle = document.createElement('style');
 emojiStyle.textContent = `
   @keyframes emojiUp {
-  0% {
-    opacity: 1;
-    transform: translateY(0);
+    0% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-60px);
+    }
   }
-  100% {
-    opacity: 0;
-    transform: translateY(-60px);
-  }
-}
 `;
-
 document.head.appendChild(emojiStyle);
 
 window.addEventListener('focus', () => {
@@ -180,4 +191,9 @@ chrome.storage.sync.get('snowfallEnabled', (data) => {
     snowfallEnabled = data.snowfallEnabled;
   }
   toggleSnowfall();
+});
+
+window.addEventListener('beforeunload', () => {
+  clearInterval(snowflakeInterval);
+  clearInterval(emojiInterval);
 });
