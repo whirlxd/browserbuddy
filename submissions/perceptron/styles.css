@@ -1,9 +1,21 @@
+.fontSize16 {
+  font-size: 16px;
+}
+
+.fontWeight700 {
+  font-weight: 700;
+}
+
+.fontWeight600 {
+  font-weight: 600;
+}
+
 body {
   font-family: 'Outfit', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #121212;
-  color: #fff;
+  background-color: #FFFFFF;
+  color: #000;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,81 +24,92 @@ body {
 
 .container {
   text-align: center;
-  padding: 15px;
-  background: #1f1f1f;
+  padding: 10px;
+  background: #FFFFFF;
   border-radius: 10px;
-  width: 220px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  width: 240px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.divider {
+  height: 1.2px;
+  background-color: #E0E0E0;
+}
+
+.filter-container {
+  margin-top: 10px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.icon {
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
 }
 
 h1 {
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 700;
-  margin-bottom: 16px;
-  color: #fff;
-}
-
-button {
-  width: 100%;
-  padding: 12px 0;
-  margin: 6px 0;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: capitalize;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-button span:first-letter {
-  text-transform: uppercase;
-}
-
-button:hover {
-  opacity: 0.8;
-}
-
-button:active {
-  opacity: 0.6;
-}
-
-.filter-btn {
-  background-color: #2196F3;
-  color: white;
-}
-
-.filter-btn:hover {
-  background-color: #1976D2;
-}
-
-.filter-btn:active {
-  background-color: #1565C0;
-}
-
-.reset-btn {
-  background-color: #f44336;
-  color: white;
-}
-
-.reset-btn:hover {
-  background-color: #e53935;
-}
-
-.reset-btn:active {
-  background-color: #d32f2f;
+  margin: 0;
+  background: linear-gradient(to right, #057BFF, #00B7FF);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 35px; /* Match icon height */
 }
 
 .filter-container {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
+}
+
+button {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 8px;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-btn {
+  background-color: #F4F4F4;
+  color: #0088FF;
+}
+
+.filter-btn:hover {
+  background-color: #E0E0E0;
+}
+
+.filter-btn:active {
+  background-color: #C0C0C0;
+}
+
+.reset-btn {
+  background-color: #0088FF;
+  color: white;
+}
+
+.reset-btn:hover {
+  background-color: #0077E6;
+}
+
+.reset-btn:active {
+  background-color: #0055AA;
 }
 
 @media (max-width: 300px) {
   .container {
     width: 200px;
-    padding: 12px;
+    padding: 15px;
   }
   h1 {
     font-size: 18px;

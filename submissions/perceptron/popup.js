@@ -22,7 +22,7 @@ function applyFilter(filterType) {
         {
           target: { tabId: tab.id },
           func: simulateColorBlindness,
-          args: [filterType]
+          args: [filterType],
         },
         () => console.log(`Applied filter: ${filterType}`)
       );
@@ -37,7 +37,7 @@ function simulateColorBlindness(filterType) {
     deuteranopia: 'url(#deuteranopia-filter)',
     protanopia: 'url(#protanopia-filter)',
     tritanopia: 'url(#tritanopia-filter)',
-    normal: 'none'
+    normal: 'none',
   };
 
   const svg = `
@@ -62,11 +62,50 @@ function simulateColorBlindness(filterType) {
     document.body.appendChild(div);
   }
 
-  const content = document.querySelector('main') || document.body;
-  content.style.filter = filters[filterType];
-  
-  const fixedElements = document.querySelectorAll('[style*="position: fixed"]');
-  fixedElements.forEach((el) => {
-    el.style.filter = 'none';
-  });
+  if (filterType === 'normal') {
+    const container = document.getElementById('colorblind-container');
+    if (container) {
+      while (container.firstChild) {
+        document.body.appendChild(container.firstChild);
+      }
+      container.remove();
+    }
+    document.body.style.overflow = 'auto';
+    document.body.style.position = '';
+    document.body.style.zIndex = '';
+  } else {
+    let container = document.getElementById('colorblind-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'colorblind-container';
+      container.style.position = 'fixed';
+      container.style.top = '0';
+      container.style.left = '0';
+      container.style.width = '100%';
+      container.style.height = '100%';
+      container.style.overflow = 'auto';
+      container.style.margin = '0';
+      container.style.padding = '0';
+      container.style.zIndex = '1';
+
+      Array.from(document.body.children).forEach((child) => {
+        const computedStyle = window.getComputedStyle(child);
+        if (computedStyle.position !== 'fixed' && computedStyle.position !== 'sticky') {
+          container.appendChild(child);
+        }
+      });
+      document.body.appendChild(container);
+    }
+
+    container.style.filter = filters[filterType];
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'relative';
+    document.body.style.zIndex = '0';
+
+    const fixedElements = document.querySelectorAll('body > *:not(#colorblind-container):not(#colorblind-filters)');
+    fixedElements.forEach((el) => {
+      el.style.position = 'fixed';
+      el.style.zIndex = '2';
+    });
+  }
 }
