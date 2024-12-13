@@ -8,9 +8,9 @@ Add a festive touch to your browsing experience with this extension. Enjoy a sno
 - **Festive Emojis**: Random festive emojis like 🎄, 🎅, ❄️, and custom emojis/gifs are spawned on your screen, creating a fun, holiday-themed environment
 - **Easy Access**: Use the toggle button in the popup to enable or disable the snowfall effect as needed
 
-## Screenshots
+## Screenshot
 
-![Screenshot](https://cloud-ang1rlegs-hack-club-bot.vercel.app/1output.gif)  
+![Demo](https://cloud-ang1rlegs-hack-club-bot.vercel.app/1output.gif)
 
 ## Credits
 
