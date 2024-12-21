@@ -3,10 +3,16 @@
   "name": "Snowy",
   "version": "1.0",
   "description": "Adds a minimalist snow effect to any webpage.",
-  "permissions": ["activeTab"],
+  "permissions": [
+    "scripting",
+    "tabs"
+  ],
   "background": {
     "service_worker": "background.js"
   },
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
