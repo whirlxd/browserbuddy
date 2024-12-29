@@ -22,7 +22,7 @@ Download the correct file for your browser and import it from the extension sett
 
 ## Build Manually
 
-Use the included nix flake by running `nix develop`
+Use the included nix flake by running `nix develop` (or manually install nodejs 22)
 
 Install packages with `npm i --force` (`--force` is needed because `@hackclub/icons` does officially not support react 19)
 
