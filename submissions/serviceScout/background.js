@@ -5,7 +5,7 @@ async function pingUrl(url){
     if (!/\b(?:(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\.){3}(?:25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)\b/i.test(url)){
         
         console.log("not an ip address",url)
-        if ((!/\.[a-z]{2,}$/i.test(url))){
+        if ((!/\.[a-z]{2,}(\/|$)/i.test(url))){
             console.log("doesn't have domain")
             url = url + '.com';
         }
