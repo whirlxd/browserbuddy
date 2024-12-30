@@ -1,10 +1,3 @@
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   if (message.msg === "click") {
-//     chrome.storage.local.get().then((items) => {
-//       console.log(items)
-//     });
-//   }
-// });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.msg === "forceSendHeartbeat") {
@@ -17,7 +10,8 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
       apiKey: "",
       heartbeats: [],
       enabled: true,
-      msg: ""
+      msg: "",
+      api_url: "https://waka.hackclub.com/api"
     });
   }
 });
@@ -34,6 +28,12 @@ function sendHeartbeat() {
       let apiKey = items.apiKey;
       if (apiKey === "") {
         chrome.storage.local.set({ msg: "Please set your WakaTime API key." });
+        return
+      }
+      let api_url = items.api_url;
+      if (api_url === "") {
+        chrome.storage.local.set({ msg: "Please set your WakaTime API URL." });
+        return
       }
       try {
         if (heartbeats.length === 0) {
@@ -43,7 +43,7 @@ function sendHeartbeat() {
         return;
       }
 
-      fetch("https://waka.hackclub.com/api/compat/wakatime/v1/users/current/heartbeats.bulk", {
+      fetch(api_url+"/compat/wakatime/v1/users/current/heartbeats.bulk", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

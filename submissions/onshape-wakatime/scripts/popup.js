@@ -17,8 +17,20 @@ chrome.storage.local.get().then((items) => {
     let msg = document.getElementById("msg");
     msg.innerText = items.msg;
 
+    let api_url = document.getElementById("api_url");
+    api_url.value = items.api_url;
+    api_url.addEventListener("change", function () {
+        chrome.storage.local.set({ api_url: api_url.value });
+    });
+
     let sendHeartbeat = document.getElementById("sendHeartbeat");
     sendHeartbeat.addEventListener("click", function () {
         chrome.runtime.sendMessage({ msg: "forceSendHeartbeat" });
     });
   });
+
+  button = document.getElementById("help");
+    button.addEventListener("click", link_open);
+function link_open() {
+    chrome.tabs.create({ url: "https://github.com/JeffreyWangDev/onshape-wakatime/blob/main/README.md#api-key" });
+}

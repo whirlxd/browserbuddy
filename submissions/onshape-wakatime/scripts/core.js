@@ -1,5 +1,7 @@
+let VERSION = "1.0.1";
 function getUserAgent() {
-    return navigator.userAgent;
+    var result = bowser.getParser(window.navigator.userAgent);
+    return result.getBrowserName()+"/"+result.getBrowserVersion()+" "+(result.getOSName()+"_"+result.getOSVersion()).replace(" ", "_")+" onshape-wakatime/"+VERSION;
 }
 function uuidv4() {
     return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
@@ -44,10 +46,5 @@ class WakaCore {
         const heartbeat = this.buildHeartbeat(url);
         if (!this.shouldSendHeartbeat()) return;
         this.lastHeartbeatSentAt = Date.now();
-
-        // const xhr = new XMLHttpRequest();
-        // xhr.open("POST", "https://wakatime.com/api/v1/heartbeats", true);
-        // xhr.setRequestHeader("Content-Type", "application/json");
-        // xhr.send(JSON.stringify(heartbeat));
     }
 }
