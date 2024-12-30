@@ -5,7 +5,6 @@
   "description": "Simple extension to manage server connectivity",
   "permissions": ["alarms", "activeTab", "scripting", "storage"],
   "background": {
-    "scripts": ["background.js"],
     "service_worker": "background.js"
   },
   "action": {
