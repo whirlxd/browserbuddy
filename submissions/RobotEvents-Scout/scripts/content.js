@@ -5,7 +5,7 @@ var table = document.getElementById("info")
 
 var titleRow = table.insertRow(-1);
 var titleText = titleRow.insertCell(0);
-titleText.outerHTML = "<br><h4>VRC Data Analysis Stats</h4>";
+titleText.outerHTML = "<br><h4>V5RC Stats</h4>";
 
 var tsRow = table.insertRow(-1);
 var trueSkillRank = tsRow.insertCell(0);
