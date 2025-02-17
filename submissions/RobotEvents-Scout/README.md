@@ -7,4 +7,6 @@ Usage:
 2. Open any VEX V5RC Team Page on RobotEvents
 - No other manual inputs are needed, as the extension will automatically scour the web for data and display them when a team page is opened.
 
+To test if the extension is working, visit https://www.robotevents.com/teams/V5RC/210Z and ensure that information is loaded below the "V5RC Stats" header
+
 ![a](screenshot.png)
