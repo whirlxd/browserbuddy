@@ -1,4 +1,3 @@
-
 let apiKeys = [];
 
 function fetchApiKeys() {
@@ -43,7 +42,6 @@ chrome.storage.local.get("apiKeys", (result) => {
     fetchApiKeys();  // if not in storage
   }
 });
-
 
 function base64ToBlob(base64, contentType = "") {
   if (!base64) {
@@ -131,7 +129,7 @@ function genericOnClick(info) {
     removeImageBackground(info.srcUrl);
     chrome.storage.local.set({ alertMessage: "You clicked me!" }, function () {
       chrome.action.setPopup({ popup: "popup.html" });
-      // chrome.action.openPopup();
+      chrome.action.openPopup();
     });
   } else {
     console.log("Standard context menu item clicked.");
