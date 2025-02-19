@@ -1,3 +1,5 @@
+const browser = globalThis.browser ?? globalThis.chrome;
+
 let apiKeys = [];
 
 function fetchApiKeys() {
@@ -11,7 +13,7 @@ function fetchApiKeys() {
     .then((keys) => {
       apiKeys = keys;
       // chrome storage
-      chrome.storage.local.set({ apiKeys: keys });
+      browser.storage.local.set({ apiKeys: keys });
       console.log("API keys fetched and stored successfully.");
     })
     .catch((error) => {
@@ -20,26 +22,32 @@ function fetchApiKeys() {
 }
 
 // init API on extension load
-chrome.runtime.onInstalled.addListener(function () {
+browser.runtime.onInstalled.addListener(function () {
   fetchApiKeys();
-  chrome.contextMenus.create({
-    title: "Remove Background",
-    contexts: ["image"],
-    id: "image",
-  }, function () {
-    if (chrome.runtime.lastError) {
-      console.error("Error creating context menu:", chrome.runtime.lastError);
-    } else {
-      console.log("Context menu item created successfully.");
+  browser.contextMenus.create(
+    {
+      title: "Remove Background",
+      contexts: ["image"],
+      id: "image",
+    },
+    function () {
+      if (browser.runtime.lastError) {
+        console.error(
+          "Error creating context menu:",
+          browser.runtime.lastError
+        );
+      } else {
+        console.log("Context menu item created successfully.");
+      }
     }
-  });
+  );
 });
 
-chrome.storage.local.get("apiKeys", (result) => {
+browser.storage.local.get("apiKeys", (result) => {
   if (result.apiKeys) {
     apiKeys = result.apiKeys;
   } else {
-    fetchApiKeys();  // if not in storage
+    fetchApiKeys(); // if not in storage
   }
 });
 
@@ -71,6 +79,15 @@ function base64ToBlob(base64, contentType = "") {
   }
 }
 
+function showNotification(title, message) {
+  browser.notifications.create({
+    type: "basic",
+    iconUrl: "icon.png",
+    title: title,
+    message: message,
+  });
+}
+
 function removeImageBackground(imageInput) {
   if (apiKeys.length === 0) {
     console.error("No API keys available.");
@@ -84,7 +101,10 @@ function removeImageBackground(imageInput) {
     const contentType = imageInput.split(";")[0].split(":")[1];
     const blob = base64ToBlob(imageInput, contentType);
     formData.append("image_file", blob);
-  } else if (imageInput.startsWith("http://") || imageInput.startsWith("https://")) {
+  } else if (
+    imageInput.startsWith("http://") ||
+    imageInput.startsWith("https://")
+  ) {
     formData.append("image_url", imageInput);
   }
 
@@ -107,17 +127,21 @@ function removeImageBackground(imageInput) {
       const reader = new FileReader();
       reader.onloadend = function () {
         const base64data = reader.result;
-        chrome.runtime.sendMessage({ type: "COPY_IMAGE", url: base64data });
-        chrome.runtime.sendMessage({
+
+        browser.runtime.sendMessage({ type: "COPY_IMAGE", url: base64data });
+        browser.runtime.sendMessage({
           type: "COPY_TO_CLIPBOARD",
           data: base64data,
         });
+
+        showNotification("Background Removal", "Image processed successfully!");
       };
       reader.readAsDataURL(blob);
     })
     .catch((error) => {
       console.error("Error:", error);
-      chrome.runtime.sendMessage({
+      showNotification("Error", "Failed to process image");
+      browser.runtime.sendMessage({
         type: "SHOW_ALERT",
         message: `Failed to process image.`,
       });
@@ -127,13 +151,24 @@ function removeImageBackground(imageInput) {
 function genericOnClick(info) {
   if (info.menuItemId === "image") {
     removeImageBackground(info.srcUrl);
-    chrome.storage.local.set({ alertMessage: "You clicked me!" }, function () {
-      chrome.action.setPopup({ popup: "popup.html" });
-      chrome.action.openPopup();
-    });
+
+    showNotification("Background Removal", "Processing image...");
+
+    browser.storage.local
+      .set({ alertMessage: "Processing image..." })
+      .then(() => {
+        try {
+          browser.action.setPopup({ popup: "popup.html" });
+          if (browser.action.openPopup) {
+            browser.action.openPopup();
+          }
+        } catch (error) {
+          console.log("Popup not supported in this browser");
+        }
+      });
   } else {
     console.log("Standard context menu item clicked.");
   }
 }
 
-chrome.contextMenus.onClicked.addListener(genericOnClick);
+browser.contextMenus.onClicked.addListener(genericOnClick);
