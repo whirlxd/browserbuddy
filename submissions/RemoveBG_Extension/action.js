@@ -152,10 +152,10 @@ function genericOnClick(info) {
   if (info.menuItemId === "image") {
     removeImageBackground(info.srcUrl);
 
-    showNotification("Background Removal", "Processing image...");
+    showNotification("Background Removal", "Nothing Yet...");
 
     browser.storage.local
-      .set({ alertMessage: "Processing image..." })
+      .set({ alertMessage: "Nothing Yet..." })
       .then(() => {
         try {
           browser.action.setPopup({ popup: "popup.html" });
