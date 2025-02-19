@@ -11,13 +11,15 @@
     "default_icon": "icon.png"
   },
   "background": {
-    "service_worker": "action.js"
+    "service_worker": "action.js",
+    "scripts": ["action.js"]
   },
   "permissions": [
     "contextMenus",
     "storage",
     "clipboardWrite",
-    "activeTab"
+    "activeTab",
+    "notifications"
   ],
   "browser_specific_settings": {
     "gecko": {
