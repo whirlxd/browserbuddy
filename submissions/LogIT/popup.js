@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const amountInput = document.getElementById("amount");
     const descriptionInput = document.getElementById("description");
+    const tagInput = document.getElementById("tag");
     const addExpenseBtn = document.getElementById("addExpense");
     const copyAllBtn = document.getElementById("copyAll");
     const exportCSVBtn = document.getElementById("exportCSV");
@@ -16,6 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let expenses = [];
 
+    // Load saved expenses
+    chrome.storage.local.get("expenses", (data) => {
+        expenses = data.expenses || [];
+        updateList();
+    });
+
     function updateList() {
         expenseList.innerHTML = "";
         let total = 0;
@@ -23,9 +30,10 @@ document.addEventListener("DOMContentLoaded", function () {
         expenses.forEach((expense, index) => {
             const li = document.createElement("li");
             li.innerHTML = `
-                <span class="expense-text">${expense.amount} - ${expense.description}</span>
+                <span class="expense-text">${expense.amount} - ${expense.description} (${expense.tag})</span>
                 <button class="edit-amount" data-index="${index}">✏️</button>
                 <button class="edit-desc" data-index="${index}">📝</button>
+                <button class="edit-tag" data-index="${index}">🏷️</button>
                 <button class="delete" data-index="${index}">❌</button>
             `;
             total += parseFloat(expense.amount);
@@ -33,18 +41,23 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         totalAmountDisplay.textContent = `Total - ${total}`;
+
+        // Save to storage
+        chrome.storage.local.set({ expenses });
     }
 
     addExpenseBtn.addEventListener("click", () => {
         const amount = amountInput.value.trim();
         const description = descriptionInput.value.trim();
+        const tag = tagInput.value.trim();
 
         if (amount === "" || description === "" || isNaN(amount) || parseFloat(amount) < 0) return;
 
-        expenses.push({ amount, description });
+        expenses.push({ amount, description, tag: tag || "General" });
         updateList();
         amountInput.value = "";
         descriptionInput.value = "";
+        tagInput.value = "";
     });
 
     expenseList.addEventListener("click", (e) => {
@@ -64,25 +77,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 expenses[index].description = newDesc.trim();
                 updateList();
             }
+        } else if (e.target.classList.contains("edit-tag")) {
+            const newTag = prompt("Edit tag:", expenses[index].tag);
+            if (newTag !== null) {
+                expenses[index].tag = newTag.trim();
+                updateList();
+            }
         }
     });
 
     copyAllBtn.addEventListener("click", () => {
         let text = `Date: ${formattedDate}\n\n`;
         expenses.forEach(expense => {
-            text += `${expense.amount} - ${expense.description}\n`;
+            text += `${expense.amount} - ${expense.description} (${expense.tag})\n`;
         });
         text += `\nTotal - ${expenses.reduce((sum, ex) => sum + parseFloat(ex.amount), 0)}`;
-        
+
         navigator.clipboard.writeText(text).then(() => {
             alert("Copied to clipboard!");
         });
     });
 
     exportCSVBtn.addEventListener("click", () => {
-        let csv = `Date,${formattedDate}\nAmount,Description\n`;
+        let csv = `Date,${formattedDate}\nAmount,Description,Tag\n`;
         expenses.forEach(exp => {
-            csv += `${exp.amount},${exp.description}\n`;
+            csv += `${exp.amount},${exp.description},${exp.tag}\n`;
         });
 
         const blob = new Blob([csv], { type: "text/csv" });
