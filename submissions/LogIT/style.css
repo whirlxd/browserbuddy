@@ -65,7 +65,7 @@ li {
     border-radius: 5px;
 }
 
-button.edit-amount, button.edit-desc, button.delete {
+button.edit-amount, button.edit-desc, button.edit-tag, button.delete {
     background: none;
     border: none;
     cursor: pointer;
