@@ -11,8 +11,7 @@
     "default_icon": "icon.png"
   },
   "background": {
-    "service_worker": "action.js",
-    "scripts": ["action.js"]
+    "service_worker": "action.js"
   },
   "permissions": [
     "contextMenus",
