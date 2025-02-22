@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const themeToggleBtn = document.getElementById('themeToggleBtn');
-  
+
   chrome.storage.sync.get({ theme: 'dark' }, (data) => {
     applyTheme(data.theme);
   });
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   loadReminders();
 
-  document.getElementById('closeBtn').addEventListener('click', function() {
+  document.getElementById('closeBtn').addEventListener('click', function () {
     chrome.runtime.sendMessage({ action: 'closeIframe' });
   });
 });
@@ -77,32 +77,32 @@ function loadReminders() {
     reminders.forEach(reminder => {
       const reminderDiv = document.createElement('div');
       reminderDiv.className = 'reminder';
-      
+
       const textSpan = document.createElement('span');
       textSpan.textContent = reminder.text;
       reminderDiv.appendChild(textSpan);
-      
+
       const small = document.createElement('small');
       small.textContent = `For: ${reminder.pageTitle || reminder.pageUrl}`;
       reminderDiv.appendChild(small);
-      
+
       const actionsDiv = document.createElement('div');
       actionsDiv.className = 'actions';
-      
+
       const editButton = document.createElement('button');
       editButton.textContent = 'Edit';
       editButton.addEventListener('click', () => {
         editReminder(reminder.id);
       });
       actionsDiv.appendChild(editButton);
-      
+
       const deleteButton = document.createElement('button');
       deleteButton.textContent = 'Delete';
       deleteButton.addEventListener('click', () => {
         deleteReminder(reminder.id);
       });
       actionsDiv.appendChild(deleteButton);
-      
+
       reminderDiv.appendChild(actionsDiv);
       remindersList.appendChild(reminderDiv);
     });

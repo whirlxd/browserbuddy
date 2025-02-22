@@ -14,7 +14,8 @@ body.light-mode {
   --button-text: #fff;
 }
 
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -29,6 +30,7 @@ html, body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .container::-webkit-scrollbar {
   display: none;
 }
@@ -130,9 +132,11 @@ h1 {
   width: 80%;
   max-width: 280px;
 }
+
 #remindersList::-webkit-scrollbar {
   display: none;
 }
+
 #remindersList {
   scrollbar-width: none;
 }

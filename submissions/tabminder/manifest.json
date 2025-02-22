@@ -23,8 +23,16 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["iframe.html", "iframe.css", "reminder.html", "reminder.css", "reminder.js"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "iframe.html",
+        "iframe.css",
+        "reminder.html",
+        "reminder.css",
+        "reminder.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }

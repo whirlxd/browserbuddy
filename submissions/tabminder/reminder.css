@@ -1,111 +1,113 @@
 :root {
-    --bg-dark: #000;
-    --text-dark: #fff;
-    --bg-light: #fff;
-    --text-light: #000;
-    --border-dark: #fff;
-    --border-light: #000;
+  --bg-dark: #000;
+  --text-dark: #fff;
+  --bg-light: #fff;
+  --text-light: #000;
+  --border-dark: #fff;
+  --border-light: #000;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-dark);
-  }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
 
-  body.light-mode {
-    background-color: var(--bg-light);
-    color: var(--text-light);
-  }
+body.light-mode {
+  background-color: var(--bg-light);
+  color: var(--text-light);
+}
 
-  html.light-mode {
-    background-color: var(--bg-light);
-  }
-  html.dark-mode {
-    background-color: var(--bg-dark);
-  }
+html.light-mode {
+  background-color: var(--bg-light);
+}
 
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: inherit;
-    padding: 6px 10px;
-    border-bottom: 1px solid var(--border-dark);
-  }
+html.dark-mode {
+  background-color: var(--bg-dark);
+}
 
-  body.light-mode .header {
-    border-bottom: 1px solid var(--border-light);
-  }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: inherit;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border-dark);
+}
 
-  .window-title {
-    font-size: 14px;
-    font-weight: 600;
-    flex-grow: 1;
-  }
+body.light-mode .header {
+  border-bottom: 1px solid var(--border-light);
+}
 
-  .controls {
-    display: flex;
-    align-items: center;
-  }
+.window-title {
+  font-size: 14px;
+  font-weight: 600;
+  flex-grow: 1;
+}
 
-  .page-title {
-    font-size: 14px;
-    margin-right: 8px;
-    max-width: 120px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+.controls {
+  display: flex;
+  align-items: center;
+}
 
-  .btn-group {
-    display: flex;
-    gap: 10px;
-  }
+.page-title {
+  font-size: 14px;
+  margin-right: 8px;
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  #themeToggleBtn,
-  #closeBtn {
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--bg-light);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--text-light);
-  }
+.btn-group {
+  display: flex;
+  gap: 10px;
+}
 
-  body.light-mode #themeToggleBtn,
-  body.light-mode #closeBtn {
-    background-color: var(--bg-dark);
-    color: var(--text-dark);
-  }
+#themeToggleBtn,
+#closeBtn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-light);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-light);
+}
 
-  .container {
-    padding: 10px;
-  }
+body.light-mode #themeToggleBtn,
+body.light-mode #closeBtn {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
 
-  #reminderContent {
-    font-size: 16px;
-    padding: 10px;
-    border: 1px solid var(--border-dark);
-    border-radius: 5px;
-    max-height: 120px;
-    overflow-y: auto;
-    scrollbar-width: none;
-    background-color: inherit;
-  }
+.container {
+  padding: 10px;
+}
 
-  body.light-mode #reminderContent {
-    border: 1px solid var(--border-light);
-  }
+#reminderContent {
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid var(--border-dark);
+  border-radius: 5px;
+  max-height: 120px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  background-color: inherit;
+}
 
-  #reminderContent::-webkit-scrollbar {
-    display: none;
-  }
+body.light-mode #reminderContent {
+  border: 1px solid var(--border-light);
+}
+
+#reminderContent::-webkit-scrollbar {
+  display: none;
+}

@@ -15,7 +15,7 @@ function applyTheme(theme) {
     body.classList.remove('light-mode');
     body.classList.add('dark-mode');
   }
-  
+
   document.documentElement.style.backgroundColor =
     theme === 'light' ? 'var(--bg-light)' : 'var(--bg-dark)';
 }
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const themeToggleBtn = document.getElementById('themeToggleBtn');
-  
+
   chrome.storage.sync.get({ theme: 'dark' }, (data) => {
     applyTheme(data.theme);
     adjustIframeHeight();
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   chrome.storage.sync.get({ reminders: [] }, (data) => {
     const reminders = Array.isArray(data.reminders) ? data.reminders : [];
-    const matchingReminders = reminders.filter(r => 
+    const matchingReminders = reminders.filter(r =>
       r.pageUrl && page.includes(r.pageUrl) &&
       (!r.snoozeUntil || Date.now() > r.snoozeUntil)
     );

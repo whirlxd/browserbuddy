@@ -2,7 +2,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url) {
     chrome.storage.sync.get({ reminders: [] }, (data) => {
       let reminders = Array.isArray(data.reminders) ? data.reminders : [];
-      const matchingReminders = reminders.filter(reminder => 
+      const matchingReminders = reminders.filter(reminder =>
         reminder.pageUrl && tab.url.includes(reminder.pageUrl) &&
         (!reminder.snoozeUntil || Date.now() > reminder.snoozeUntil)
       );
@@ -24,7 +24,7 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
     if (tab.url) {
       chrome.storage.sync.get({ reminders: [] }, (data) => {
         let reminders = Array.isArray(data.reminders) ? data.reminders : [];
-        const matchingReminders = reminders.filter(reminder => 
+        const matchingReminders = reminders.filter(reminder =>
           reminder.pageUrl && tab.url.includes(reminder.pageUrl) &&
           (!reminder.snoozeUntil || Date.now() > reminder.snoozeUntil)
         );
@@ -97,7 +97,7 @@ chrome.action.onClicked.addListener((tab) => {
     });
     return;
   }
-  
+
   const pageUrl = tab.url;
   const pageTitle = tab.title;
   const iframeUrl = chrome.runtime.getURL("iframe.html") +
