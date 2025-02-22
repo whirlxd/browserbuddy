@@ -6,11 +6,41 @@ function getQueryParams() {
   };
 }
 
+function applyTheme(theme) {
+  const body = document.body;
+  if (theme === 'light') {
+    body.classList.remove('dark-mode');
+    body.classList.add('light-mode');
+  } else {
+    body.classList.remove('light-mode');
+    body.classList.add('dark-mode');
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const { page, title } = getQueryParams();
   if (page) {
     document.getElementById('pageTitle').textContent = title || page;
   }
+
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  
+  chrome.storage.sync.get({ theme: 'dark' }, (data) => {
+    applyTheme(data.theme);
+  });
+
+  themeToggleBtn.addEventListener('click', () => {
+    const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+    chrome.storage.sync.set({ theme: newTheme });
+    applyTheme(newTheme);
+  });
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'sync' && changes.theme) {
+      applyTheme(changes.theme.newValue);
+    }
+  });
+
   loadReminders();
 
   document.getElementById('closeBtn').addEventListener('click', function() {

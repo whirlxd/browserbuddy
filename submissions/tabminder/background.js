@@ -54,7 +54,11 @@ function injectReminderIframe(iframeUrl) {
   iframe.style.top = "20px";
   iframe.style.right = "20px";
   iframe.style.width = "300px";
-  iframe.style.height = "200px";
+  if (iframeUrl.includes("reminder.html")) {
+    iframe.style.height = "auto";
+  } else {
+    iframe.style.height = "200px";
+  }
   iframe.style.border = "none";
   iframe.style.borderRadius = "15px";
   iframe.style.zIndex = "10000";
