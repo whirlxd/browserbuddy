@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Analyzer</title>
+  <style>
+    body {
+      width: 400px;
+      padding: 15px;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 15px;
+    }
+
+    .score {
+      color: #666;
+      font-weight: bold;
+    }
+
+    .content {
+      margin: 10px 0;
+    }
+
+    .meta-length {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .recommendation {
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    #overall-score {
+      background: #f5f5f5;
+      padding: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #666;
+    }
+  </style>
+  <script src="popup.js"></script>
+</head>
+<body>
+  <h1>SEO Analyzer</h1>
+
+  <div id="overall-score">
+    Overall Score: <span class="score">0</span>/100
+  </div>
+
+  <div id="results">
+    <!-- Meta Title Section -->
+    <div class="section">
+      <h2>Meta Title</h2>
+      <div class="score" id="meta-title-score">0/10</div>
+      <div id="meta-title-content" class="content"></div>
+      <div id="meta-title-length" class="meta-length"></div>
+      <div id="meta-title-recommendation" class="recommendation"></div>
+    </div>
+
+    <!-- Meta Description Section -->
+    <div class="section">
+      <h2>Meta Description</h2>
+      <div class="score" id="meta-desc-score">0/10</div>
+      <div id="meta-desc-content" class="content"></div>
+      <div id="meta-desc-length" class="meta-length"></div>
+      <div id="meta-desc-recommendation" class="recommendation"></div>
+    </div>
+
+    <!-- Headings Section -->
+    <div class="section">
+      <h2>Headings</h2>
+      <div class="score" id="headings-score">0/10</div>
+      <div id="headings-results"></div>
+    </div>
+
+    <!-- Images Section -->
+    <div class="section">
+      <h2>Images</h2>
+      <div class="score" id="images-score">0/10</div>
+      <div id="images-results"></div>
+    </div>
+
+    <!-- Technical SEO Section -->
+    <div class="section">
+      <h2>Technical SEO</h2>
+      <div class="score" id="technical-score">0/10</div>
+      <div id="technical-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    Made by Ballav
+  </footer>
+</body>
+</html>
