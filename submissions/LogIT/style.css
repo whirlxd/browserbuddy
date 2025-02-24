@@ -45,30 +45,19 @@ button:hover {
     transform: scale(1.05);
 }
 
-#addExpense { background: #28a745; color: white; }
-#copyAll { background: #007bff; color: white; }
-#exportCSV { background: #ff9800; color: white; }
-#calculateTotal { background: #dc3545; color: white; }
-
 ul {
     list-style: none;
     padding: 0;
 }
 
 li {
-    background: #f8f9fa;
-    padding: 8px;
-    margin: 5px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 5px;
+    margin: 5px 0;
 }
 
-button.edit-amount, button.edit-desc, button.edit-tag, button.delete {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    margin-left: 3px;
+.expense-buttons {
+    display: flex;
+    gap: 3px;
 }
