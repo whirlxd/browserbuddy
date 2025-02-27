@@ -5,7 +5,7 @@ var table = document.getElementById("info")
 
 var titleRow = table.insertRow(-1);
 var titleText = titleRow.insertCell(0);
-titleText.outerHTML = "<br><h4>V5RC Stats</h4>";
+titleText.outerHTML = "<br><h4>VRC Data Analysis Stats</h4>";
 
 var tsRow = table.insertRow(-1);
 var trueSkillRank = tsRow.insertCell(0);
@@ -59,7 +59,7 @@ var awpMatchValue = awpMatchRow.insertCell(1);
 awpMatch.outerHTML = "<th>AWP%:</th>";
 
 function fetchTeamInfo (teamNumber) {
-    const database = "https://vrc-data-analysis.com/v1/team/" + teamNumber
+    const database = "https://cors.rare1k.dev/?https://vrc-data-analysis.com/v1/team/" + teamNumber
     let fetchRes = fetch(
         database,
         {
