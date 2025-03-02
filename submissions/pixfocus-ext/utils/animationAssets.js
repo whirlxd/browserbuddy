@@ -1,5 +1,5 @@
 // Import assets using relative paths
-import rabbit from "../assets/Rabbit.gif";
+import rabbit from "../assets/rabbit.gif";
 import firecamp from "../assets/firecamp.gif";
 import owl from "../assets/owl.gif";
 
