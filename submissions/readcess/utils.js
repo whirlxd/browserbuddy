@@ -1,4 +1,17 @@
 class ReadingUtils {
+  static contentFactors = {
+    technical: 0.7,
+    academic: 0.75,
+    casual: 1.0,
+    narrative: 1.2
+  };
+
+  static complexityIndicators = [
+    'algorithm', 'analysis', 'research', 'study', 'theory',
+    'implementation', 'methodology', 'framework', 'abstract',
+    'technical', 'documentation', 'specification', 'protocol'
+  ];
+
   static getVisibleText(element) {
     if (element.nodeType === Node.TEXT_NODE) {
       return element.textContent.trim();
@@ -65,10 +78,33 @@ class ReadingUtils {
       .split(' ')
       .filter(word => {
         const w = word.toLowerCase();
-        return word.length > 0 && !/^\d+$/.test(word);
+        return word.length > 0 && 
+               !/^\d+$/.test(word) &&
+               !/^[^a-zA-Z]+$/.test(word);
       });
     
     return words.length;
+  }
+
+  static analyzeContentType(text) {
+    const lowerText = text.toLowerCase();
+    
+    const complexityScore = this.complexityIndicators.reduce((score, indicator) => {
+      return score + (lowerText.includes(indicator) ? 1 : 0);
+    }, 0);
+    
+    const hasCodeBlocks = /<code>|<pre>|```/.test(text);
+    const hasTechnicalPatterns = /\b(function|class|const|var|let)\b/.test(lowerText);
+    
+    if (hasCodeBlocks || hasTechnicalPatterns || complexityScore > 3) {
+      return this.contentFactors.technical;
+    } else if (complexityScore > 1) {
+      return this.contentFactors.academic;
+    } else if (text.includes('Chapter') || /\b(said|thought|felt)\b/i.test(text)) {
+      return this.contentFactors.narrative;
+    }
+    
+    return this.contentFactors.casual;
   }
 
   static formatTime(minutes) {
@@ -82,6 +118,23 @@ class ReadingUtils {
       return `${mins} minute${mins !== 1 ? 's' : ''}`;
     }
     return `${hours} hour${hours !== 1 ? 's' : ''} ${mins} minute${mins !== 1 ? 's' : ''}`;
+  }
+
+  static calculateReadingTime(text, wordsPerMinute) {
+    const words = this.countWords(text);
+    const contentFactor = this.analyzeContentType(text);
+    
+    const adjustedSpeed = wordsPerMinute * contentFactor;
+    
+    let minutes = words / adjustedSpeed;
+    
+    const imageCount = (text.match(/<img/g) || []).length;
+    minutes += imageCount * 0.1;
+    
+    const codeBlocks = (text.match(/<(pre|code)>|```/g) || []).length;
+    minutes += codeBlocks * 0.5;
+    
+    return Math.ceil(minutes);
   }
 
   static debounce(func, wait) {
@@ -99,21 +152,25 @@ class ReadingUtils {
 
 class StorageManager {
   static async getSettings() {
+    console.log('[Readcess] Getting settings...');
     const defaults = {
       readingSpeed: 200,
-      breakInterval: 20,
+      breakInterval: 5,
       enabled: true
     };
     
     try {
+      console.log('[Readcess] Checking chrome.storage.sync availability:', !!chrome.storage?.sync);
       const result = await chrome.storage.sync.get(defaults);
+      console.log('[Readcess] Storage get result:', result);
       return {
         readingSpeed: parseFloat(result.readingSpeed),
         breakInterval: parseFloat(result.breakInterval),
         enabled: result.enabled
       };
     } catch (error) {
-      console.error('Error getting settings:', error);
+      console.error('[Readcess] Error getting settings:', error);
+      console.log('[Readcess] Falling back to defaults');
       return defaults;
     }
   }
@@ -130,4 +187,4 @@ class StorageManager {
       throw error;
     }
   }
-} 
+}

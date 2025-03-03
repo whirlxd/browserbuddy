@@ -98,8 +98,8 @@ class PopupManager {
       return false;
     }
 
-    if (isNaN(breakInterval) || breakInterval < 5 || breakInterval > 480) {
-      this.showStatus('Break interval must be between 5 minutes and 8 hours', 'error');
+    if (isNaN(breakInterval) || breakInterval < 2 || breakInterval > 480) {
+      this.showStatus('Break interval must be between 2 minutes and 8 hours', 'error');
       return false;
     }
 

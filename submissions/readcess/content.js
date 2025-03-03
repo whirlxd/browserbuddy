@@ -1,5 +1,8 @@
+console.log('[Readcess] Content script loaded');
+
 class ReadingTracker {
   constructor() {
+    console.log('[Readcess] Content script constructor start');
     this.settings = null;
     this.banner = null;
     this.breakOverlay = null;
@@ -8,17 +11,24 @@ class ReadingTracker {
     this.lastActivityTime = Date.now();
     this.activityListeners = [];
     
+    console.log('[Readcess] ReadingTracker initialized');
     this.initialize();
     this.setupMessageListener();
     this.setupActivityTracking();
   }
 
   async initialize() {
-    this.settings = await StorageManager.getSettings();
-    if (this.settings.enabled) {
-      this.createBanner();
+    console.log('[Readcess] Content script initializing...');
+    try {
+      this.settings = await StorageManager.getSettings();
+      console.log('[Readcess] Settings loaded:', this.settings);
+      if (this.settings.enabled) {
+        this.createBanner();
+      }
+      this.calculateAndDisplayReadingTime();
+    } catch (e) {
+      console.error('[Readcess] Initialization error:', e);
     }
-    this.calculateAndDisplayReadingTime();
   }
 
   createBanner() {
@@ -97,7 +107,9 @@ class ReadingTracker {
     document.body.appendChild(this.banner);
     
     setTimeout(() => {
-      this.banner.classList.add('visible');
+      if (this.banner) {
+        this.banner.classList.add('visible');
+      }
     }, 500);
     
     this.bannerText = textContent;
@@ -123,8 +135,8 @@ class ReadingTracker {
 
   calculateAndDisplayReadingTime() {
     const text = ReadingUtils.getVisibleText(document.body);
+    const readingTime = ReadingUtils.calculateReadingTime(text, this.settings.readingSpeed);
     const wordCount = ReadingUtils.countWords(text);
-    const readingTime = Math.ceil(wordCount / this.settings.readingSpeed);
     
     if (this.bannerText) {
       this.bannerText.textContent = `~ ${ReadingUtils.formatTime(readingTime)} · ${wordCount.toLocaleString()} words`;
@@ -135,30 +147,43 @@ class ReadingTracker {
   }
 
   setupMessageListener() {
-    chrome.runtime.onMessage.addListener(this.boundHandleMessage);
+    console.log('[Readcess] Setting up message listener');
+    try {
+      chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.action === 'ping') {
+          sendResponse(true);
+          return;
+        }
+        this.boundHandleMessage(message, sender, sendResponse);
+      });
+      console.log('[Readcess] Message listener setup complete');
+    } catch (e) {
+      console.error('[Readcess] Message listener setup failed:', e);
+    }
   }
 
   handleMessage(message, sender, sendResponse) {
+    console.log('[Readcess] Received message:', message.action);
     if (message.action === 'settingsUpdated') {
       this.settings = message.settings;
-      if (this.settings.enabled) {
-        this.cleanupBanner();
-        this.createBanner();
-        this.calculateAndDisplayReadingTime();
-      } else {
-        this.cleanupBanner();
-      }
+      this.calculateAndDisplayReadingTime();
     } else if (message.action === 'showBreak') {
-      this.showBreakReminder(message.breakInterval);
+      this.showBreakReminder();
     } else if (message.action === 'dismissBreak') {
       this.dismissBreak();
     }
   }
 
   showBreakReminder() {
+    console.log('[Readcess] Creating break reminder overlay');
     const audio = new Audio(chrome.runtime.getURL('sounds/break-alert.mp3'));
     audio.volume = 0.5;
     audio.play().catch(e => console.log('Audio play failed:', e));
+    
+    if (this.breakOverlay) {
+      console.log('[Readcess] Cleaning up existing overlay');
+      this.dismissBreak();
+    }
     
     this.breakOverlay = document.createElement('div');
     this.breakOverlay.className = 'break-overlay';
@@ -170,27 +195,81 @@ class ReadingTracker {
       <div class="break-content ${isDarkPage ? 'light-theme' : 'dark-theme'}">
         <h2>Time for a Break</h2>
         <div class="break-actions">
-          <button id="dismissBreak">Done</button>
           <button id="snoozeBreak">Snooze</button>
         </div>
+        <div class="hover-progress"></div>
       </div>
     `;
 
     document.body.appendChild(this.breakOverlay);
     
-    document.getElementById('dismissBreak').addEventListener('click', () => this.dismissBreak());
-    document.getElementById('snoozeBreak').addEventListener('click', () => this.snoozeBreak());
+    const breakContent = this.breakOverlay.querySelector('.break-content');
+    let hoverTimeout;
+    let isHovering = false;
+    
+    breakContent.addEventListener('mouseenter', () => {
+      console.log('[Readcess] Break content hover started');
+      isHovering = true;
+      breakContent.classList.add('hovering');
+      hoverTimeout = setTimeout(() => {
+        if (isHovering) {
+          console.log('[Readcess] Break content hover completed');
+          this.dismissBreak();
+        }
+      }, 1000);
+    });
+    
+    breakContent.addEventListener('mouseleave', () => {
+      console.log('[Readcess] Break content hover cancelled');
+      isHovering = false;
+      breakContent.classList.remove('hovering');
+      if (hoverTimeout) {
+        clearTimeout(hoverTimeout);
+      }
+    });
+    
+    console.log('[Readcess] Setting up break button handlers');
+    
+    setTimeout(() => {
+      this.snoozeButton = document.getElementById('snoozeBreak');
+      
+      if (!this.snoozeButton) {
+        console.error('[Readcess] Could not find snooze button');
+        return;
+      }
+      
+      this.snoozeHandler = () => {
+        console.log('[Readcess] Snooze button clicked');
+        this.snoozeBreak();
+      };
+      
+      this.snoozeButton.addEventListener('click', this.snoozeHandler);
+      console.log('[Readcess] Snooze button handler attached');
+    }, 0);
   }
 
   dismissBreak() {
+    console.log('[Readcess] Dismissing break overlay');
     if (this.breakOverlay) {
+      if (this.snoozeButton && this.snoozeHandler) {
+        console.log('[Readcess] Removing snooze button listener');
+        this.snoozeButton.removeEventListener('click', this.snoozeHandler);
+      }
+      
       this.breakOverlay.remove();
       this.breakOverlay = null;
+      this.snoozeButton = null;
+      this.snoozeHandler = null;
+      console.log('[Readcess] Break overlay cleanup complete');
+      
+      chrome.runtime.sendMessage({ action: 'breakDismissed' })
+        .then(() => console.log('[Readcess] Dismiss message sent successfully'))
+        .catch(() => console.log('[Readcess] Failed to send dismiss message'));
     }
-    chrome.runtime.sendMessage({ action: 'breakDismissed' });
   }
 
   snoozeBreak() {
+    console.log('[Readcess] Sending breakSnoozed message');
     this.dismissBreak();
     chrome.runtime.sendMessage({ action: 'breakSnoozed' });
   }
@@ -239,6 +318,7 @@ class ReadingTracker {
   }
 
   cleanup() {
+    console.log('[Readcess] Cleanup method called');
     this.cleanupBanner();
     
     if (this.boundHandleMessage) {
@@ -246,21 +326,35 @@ class ReadingTracker {
     }
     
     if (this.breakOverlay) {
+      if (this.snoozeButton && this.snoozeHandler) {
+        this.snoozeButton.removeEventListener('click', this.snoozeHandler);
+      }
       this.breakOverlay.remove();
       this.breakOverlay = null;
+      this.snoozeButton = null;
+      this.snoozeHandler = null;
     }
 
     this.cleanupActivityListeners();
+    console.log('[Readcess] Cleanup completed');
   }
 }
 
 let tracker;
 window.addEventListener('load', () => {
+  console.log('[Readcess] Window load event triggered');
   tracker = new ReadingTracker();
 });
 
-window.addEventListener('unload', () => {
+window.addEventListener('beforeunload', () => {
+  console.log('[Readcess] beforeunload triggered');
   if (tracker) {
-    tracker.cleanup();
+    console.log('[Readcess] Cleanup starting...');
+    try {
+      tracker.cleanup();
+      console.log('[Readcess] Cleanup successful');
+    } catch (e) {
+      console.error('[Readcess] Cleanup failed:', e);
+    }
   }
 }); 
