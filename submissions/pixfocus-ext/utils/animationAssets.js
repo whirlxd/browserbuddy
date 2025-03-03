@@ -1,5 +1,5 @@
 // Import assets using relative paths
-import rabbit from "../assets/rabbit.gif";
+import rabbit from "../assets/rabbits.gif"; //yep my mac cant tell difference between R and r so i just added "s" both here and the filename
 import firecamp from "../assets/firecamp.gif";
 import owl from "../assets/owl.gif";
 
