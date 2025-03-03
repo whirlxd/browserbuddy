@@ -1,18 +1,18 @@
-class ReadingUtils {
-  static contentFactors = {
+const ReadingUtils = {
+  contentFactors: {
     technical: 0.7,
     academic: 0.75,
     casual: 1.0,
     narrative: 1.2
-  };
+  },
 
-  static complexityIndicators = [
+  complexityIndicators: [
     'algorithm', 'analysis', 'research', 'study', 'theory',
     'implementation', 'methodology', 'framework', 'abstract',
     'technical', 'documentation', 'specification', 'protocol'
-  ];
+  ],
 
-  static getVisibleText(element) {
+  getVisibleText(element) {
     if (element.nodeType === Node.TEXT_NODE) {
       return element.textContent.trim();
     }
@@ -65,9 +65,9 @@ class ReadingUtils {
       text += ' ' + this.getVisibleText(child);
     }
     return text.trim();
-  }
+  },
 
-  static countWords(text) {
+  countWords(text) {
     const cleanText = text
       .replace(/[""'']/g, '')
       .replace(/[.,\/#!$%\^&\*;:{}=_`~()\[\]]/g, ' ')
@@ -84,9 +84,9 @@ class ReadingUtils {
       });
     
     return words.length;
-  }
+  },
 
-  static analyzeContentType(text) {
+  analyzeContentType(text) {
     const lowerText = text.toLowerCase();
     
     const complexityScore = this.complexityIndicators.reduce((score, indicator) => {
@@ -105,9 +105,9 @@ class ReadingUtils {
     }
     
     return this.contentFactors.casual;
-  }
+  },
 
-  static formatTime(minutes) {
+  formatTime(minutes) {
     if (minutes < 1) {
       return '1 minute';
     }
@@ -118,9 +118,9 @@ class ReadingUtils {
       return `${mins} minute${mins !== 1 ? 's' : ''}`;
     }
     return `${hours} hour${hours !== 1 ? 's' : ''} ${mins} minute${mins !== 1 ? 's' : ''}`;
-  }
+  },
 
-  static calculateReadingTime(text, wordsPerMinute) {
+  calculateReadingTime(text, wordsPerMinute) {
     const words = this.countWords(text);
     const contentFactor = this.analyzeContentType(text);
     
@@ -135,9 +135,9 @@ class ReadingUtils {
     minutes += codeBlocks * 0.5;
     
     return Math.ceil(minutes);
-  }
+  },
 
-  static debounce(func, wait) {
+  debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
       const later = () => {
@@ -148,18 +148,22 @@ class ReadingUtils {
       timeout = setTimeout(later, wait);
     };
   }
-}
+};
 
-class StorageManager {
-  static async getSettings() {
+const StorageManager = {
+  async getSettings() {
     console.log('[Readcess] Getting settings...');
     const defaults = {
       readingSpeed: 200,
-      breakInterval: 5,
+      breakInterval: 2,
       enabled: true
     };
     
     try {
+      if (!chrome.storage || !chrome.storage.sync) {
+        console.error('[Readcess] Chrome storage not available');
+        return defaults;
+      }
       console.log('[Readcess] Checking chrome.storage.sync availability:', !!chrome.storage?.sync);
       const result = await chrome.storage.sync.get(defaults);
       console.log('[Readcess] Storage get result:', result);
@@ -173,9 +177,9 @@ class StorageManager {
       console.log('[Readcess] Falling back to defaults');
       return defaults;
     }
-  }
+  },
 
-  static async saveSettings(settings) {
+  async saveSettings(settings) {
     try {
       await chrome.storage.sync.set({
         readingSpeed: settings.readingSpeed,
@@ -187,4 +191,7 @@ class StorageManager {
       throw error;
     }
   }
-}
+};
+
+self.ReadingUtils = ReadingUtils;
+self.StorageManager = StorageManager;

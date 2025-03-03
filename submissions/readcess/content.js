@@ -11,7 +11,7 @@ class ReadingTracker {
     this.lastActivityTime = Date.now();
     this.activityListeners = [];
     
-    console.log('[Readcess] ReadingTracker initialized');
+    console.log('[Readcess] ReadingTracker initializing');
     this.initialize();
     this.setupMessageListener();
     this.setupActivityTracking();
@@ -163,28 +163,25 @@ class ReadingTracker {
   }
 
   handleMessage(message, sender, sendResponse) {
-    console.log('[Readcess] Received message:', message.action);
+    console.log('[Readcess] Received message:', message);
     if (message.action === 'settingsUpdated') {
       this.settings = message.settings;
       this.calculateAndDisplayReadingTime();
     } else if (message.action === 'showBreak') {
       this.showBreakReminder();
+      sendResponse({ success: true });
     } else if (message.action === 'dismissBreak') {
       this.dismissBreak();
+      sendResponse({ success: true });
     }
   }
 
   showBreakReminder() {
-    console.log('[Readcess] Creating break reminder overlay');
-    const audio = new Audio(chrome.runtime.getURL('sounds/break-alert.mp3'));
-    audio.volume = 0.5;
-    audio.play().catch(e => console.log('Audio play failed:', e));
-    
+    console.log('[Readcess] Showing break reminder');
     if (this.breakOverlay) {
-      console.log('[Readcess] Cleaning up existing overlay');
       this.dismissBreak();
     }
-    
+
     this.breakOverlay = document.createElement('div');
     this.breakOverlay.className = 'break-overlay';
     
@@ -228,50 +225,31 @@ class ReadingTracker {
       }
     });
     
-    console.log('[Readcess] Setting up break button handlers');
-    
-    setTimeout(() => {
-      this.snoozeButton = document.getElementById('snoozeBreak');
-      
-      if (!this.snoozeButton) {
-        console.error('[Readcess] Could not find snooze button');
-        return;
-      }
-      
-      this.snoozeHandler = () => {
-        console.log('[Readcess] Snooze button clicked');
-        this.snoozeBreak();
-      };
-      
-      this.snoozeButton.addEventListener('click', this.snoozeHandler);
-      console.log('[Readcess] Snooze button handler attached');
-    }, 0);
+    const snoozeButton = this.breakOverlay.querySelector('#snoozeBreak');
+    snoozeButton.addEventListener('click', () => {
+      console.log('[Readcess] Snooze clicked');
+      chrome.runtime.sendMessage({ action: 'breakSnoozed' });
+      this.dismissBreak();
+    });
   }
 
   dismissBreak() {
-    console.log('[Readcess] Dismissing break overlay');
+    console.log('[Readcess] Dismissing break');
     if (this.breakOverlay) {
-      if (this.snoozeButton && this.snoozeHandler) {
-        console.log('[Readcess] Removing snooze button listener');
-        this.snoozeButton.removeEventListener('click', this.snoozeHandler);
-      }
-      
       this.breakOverlay.remove();
       this.breakOverlay = null;
-      this.snoozeButton = null;
-      this.snoozeHandler = null;
-      console.log('[Readcess] Break overlay cleanup complete');
-      
-      chrome.runtime.sendMessage({ action: 'breakDismissed' })
-        .then(() => console.log('[Readcess] Dismiss message sent successfully'))
-        .catch(() => console.log('[Readcess] Failed to send dismiss message'));
+      if (chrome.runtime?.id) {
+        chrome.runtime.sendMessage({ action: 'breakDismissed' })
+          .catch(e => {
+            if (e.message.includes('Extension context invalidated')) {
+              console.log('[Readcess] Extension reloaded, refreshing page...');
+              window.location.reload();
+            } else {
+              console.error('[Readcess] Error sending dismiss message:', e);
+            }
+          });
+      }
     }
-  }
-
-  snoozeBreak() {
-    console.log('[Readcess] Sending breakSnoozed message');
-    this.dismissBreak();
-    chrome.runtime.sendMessage({ action: 'breakSnoozed' });
   }
 
   isColorDark(color) {
@@ -286,23 +264,27 @@ class ReadingTracker {
   setupActivityTracking() {
     this.cleanupActivityListeners();
     
-    const reportActivity = () => {
-      const now = Date.now();
-      if (now - this.lastActivityTime > 500) {
-        if (chrome.runtime?.id && !chrome.runtime.lastError) {
-          chrome.runtime.sendMessage({ action: 'userActivity' })
-            .catch(() => {});
-        }
-        this.lastActivityTime = now;
+    const trackActivity = () => {
+      this.lastActivityTime = Date.now();
+      if (chrome.runtime?.id) {
+        chrome.runtime.sendMessage({ action: 'userActivity' })
+          .catch(e => {
+            if (e.message.includes('Extension context invalidated')) {
+              console.log('[Readcess] Extension reloaded, refreshing page...');
+              window.location.reload();
+            } else {
+              console.error('[Readcess] Error sending activity:', e);
+            }
+          });
       }
     };
     
-    const debouncedReportActivity = ReadingUtils.debounce(reportActivity, 500);
+    const debouncedTrackActivity = ReadingUtils.debounce(trackActivity, 1000);
     
     const events = ['scroll', 'mousemove', 'keypress', 'click'];
     events.forEach(event => {
-      window.addEventListener(event, debouncedReportActivity, { passive: true });
-      this.activityListeners.push({ event, handler: debouncedReportActivity });
+      window.addEventListener(event, debouncedTrackActivity, { passive: true });
+      this.activityListeners.push({ event, handler: debouncedTrackActivity });
     });
   }
 
@@ -326,13 +308,8 @@ class ReadingTracker {
     }
     
     if (this.breakOverlay) {
-      if (this.snoozeButton && this.snoozeHandler) {
-        this.snoozeButton.removeEventListener('click', this.snoozeHandler);
-      }
       this.breakOverlay.remove();
       this.breakOverlay = null;
-      this.snoozeButton = null;
-      this.snoozeHandler = null;
     }
 
     this.cleanupActivityListeners();

@@ -10,42 +10,55 @@ class PopupManager {
   }
 
   async initialize() {
-    const settings = await StorageManager.getSettings();
-    this.readingSpeedInput.value = settings.readingSpeed;
-    this.breakIntervalInput.value = settings.breakInterval;
-    this.updateToggleState(settings.enabled);
-    this.saveButton.addEventListener('click', () => this.saveSettings());
-    this.enabledToggle.addEventListener('click', async () => {
-      const currentState = this.enabledToggle.classList.contains('on');
-      const newState = !currentState;
+    console.log('[Readcess] Initializing popup');
+    try {
+      const settings = await StorageManager.getSettings();
+      console.log('[Readcess] Got settings:', settings);
+      this.readingSpeedInput.value = settings.readingSpeed;
+      this.breakIntervalInput.value = settings.breakInterval;
+      this.updateToggleState(settings.enabled);
       
-      try {
-        await StorageManager.saveSettings({
-          readingSpeed: parseInt(this.readingSpeedInput.value),
-          breakInterval: parseFloat(this.breakIntervalInput.value),
-          enabled: newState
-        });
+      this.saveButton.addEventListener('click', () => this.saveSettings());
+      this.enabledToggle.addEventListener('click', async () => {
+        const currentState = this.enabledToggle.classList.contains('on');
+        const newState = !currentState;
         
-        this.updateToggleState(newState);
-        
-        const tabs = await chrome.tabs.query({});
-        for (const tab of tabs) {
-          try {
-            await chrome.tabs.sendMessage(tab.id, {
-              action: 'settingsUpdated',
-              settings: {
-                readingSpeed: parseInt(this.readingSpeedInput.value),
-                breakInterval: parseFloat(this.breakIntervalInput.value),
-                enabled: newState
-              }
-            });
-          } catch (e) {}
+        try {
+          await StorageManager.saveSettings({
+            readingSpeed: parseInt(this.readingSpeedInput.value),
+            breakInterval: parseFloat(this.breakIntervalInput.value),
+            enabled: newState
+          });
+          
+          this.updateToggleState(newState);
+          this.showStatus('Settings saved!', 'success');
+          
+          const tabs = await chrome.tabs.query({});
+          for (const tab of tabs) {
+            try {
+              await chrome.tabs.sendMessage(tab.id, {
+                action: 'settingsUpdated',
+                settings: {
+                  readingSpeed: parseInt(this.readingSpeedInput.value),
+                  breakInterval: parseFloat(this.breakIntervalInput.value),
+                  enabled: newState
+                }
+              });
+            } catch (e) {
+              console.log('[Readcess] Could not update tab:', tab.id);
+            }
+          }
+        } catch (error) {
+          console.error('[Readcess] Error saving settings:', error);
+          this.updateToggleState(!newState);
+          this.showStatus('Error saving settings', 'error');
         }
-      } catch (error) {
-        this.updateToggleState(!newState);
-        this.showStatus('Error saving settings', 'error');
-      }
-    });
+      });
+      console.log('[Readcess] Popup initialized');
+    } catch (error) {
+      console.error('[Readcess] Popup initialization error:', error);
+      this.showStatus('Error loading settings', 'error');
+    }
   }
 
   updateToggleState(enabled) {
@@ -117,5 +130,6 @@ class PopupManager {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('[Readcess] DOM loaded, creating PopupManager');
   new PopupManager();
 }); 

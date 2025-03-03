@@ -1,31 +1,15 @@
-const StorageManager = {
-  async saveSettings(settings) {
-    try {
-      await chrome.storage.sync.set(settings);
-    } catch (error) {
-      console.error('Error saving settings:', error);
-      throw error;
-    }
-  },
-  async getSettings() {
-    try {
-      const settings = await chrome.storage.sync.get();
-      return settings;
-    } catch (error) {
-      console.error('Error getting settings:', error);
-      throw error;
-    }
-  }
-};
-
 class BackgroundManager {
   constructor() {
     this.initialize();
   }
 
-  initialize() {
-    chrome.runtime.onInstalled.addListener(this.handleInstall.bind(this));
-    chrome.tabs.onUpdated.addListener(this.handleTabUpdate.bind(this));
+  async initialize() {
+    try {
+      chrome.runtime.onInstalled.addListener(this.handleInstall.bind(this));
+      chrome.tabs.onUpdated.addListener(this.handleTabUpdate.bind(this));
+    } catch (error) {
+      console.error('[Readcess] Background initialization error:', error);
+    }
   }
 
   async handleInstall(details) {
@@ -66,10 +50,9 @@ class BreakManager {
     const settings = await StorageManager.getSettings();
     this.settings = {
       readingSpeed: settings.readingSpeed || 200,
-      breakInterval: settings.breakInterval || 5,
+      breakInterval: settings.breakInterval || 2,
       enabled: settings.enabled !== undefined ? settings.enabled : true
     };
-    console.log('[Readcess] Settings initialized:', this.settings);
   }
 
   setupActivityTracking() {
@@ -77,13 +60,15 @@ class BreakManager {
     this.boundUpdateActivity = this.updateActivity.bind(this);
     this.boundCheckBreakTime = this.checkBreakTime.bind(this);
     
+    this.activeTimeInterval = setInterval(() => {
+      if (!this.graceEndTime || Date.now() > this.graceEndTime) {
+        this.activeTime += 1;
+      }
+    }, 1000);
+    
     chrome.runtime.onMessage.addListener((message) => {
       if (message.action === 'userActivity') {
         this.lastUserAction = Date.now();
-        if (!this.graceEndTime || Date.now() > this.graceEndTime) {
-          this.activeTime += 1;
-          console.log('[Readcess] Active time:', this.activeTime);
-        }
       }
     });
     
@@ -94,6 +79,11 @@ class BreakManager {
     if (this.afkTimeout) {
       clearTimeout(this.afkTimeout);
       this.afkTimeout = null;
+    }
+    
+    if (this.activeTimeInterval) {
+      clearInterval(this.activeTimeInterval);
+      this.activeTimeInterval = null;
     }
     
     if (this.boundUpdateActivity) {
@@ -114,24 +104,19 @@ class BreakManager {
     if (!this.settings?.enabled) return;
     
     if (this.graceEndTime && Date.now() < this.graceEndTime) {
-      console.log('[Readcess] In grace period, seconds remaining:', 
-        Math.round((this.graceEndTime - Date.now()) / 1000));
       return;
     }
     this.graceEndTime = null;
 
     const breakIntervalSeconds = this.settings.breakInterval * 60;
-    console.log('[Readcess] Current active time:', this.activeTime, 'Target:', breakIntervalSeconds);
 
     if (this.activeTime >= breakIntervalSeconds && !this.isBreakActive) {
-      console.log('[Readcess] Break triggered after', this.activeTime, 'seconds');
       this.showBreakReminder();
       this.activeTime = 0;
     }
   }
 
   async showBreakReminder() {
-    console.log('[Readcess] Showing break reminder');
     this.isBreakActive = true;
     this.breakShownTime = Date.now();
     this.lastUserAction = Date.now();
@@ -142,33 +127,25 @@ class BreakManager {
     
     this.afkTimeout = setTimeout(() => {
       if (this.isBreakActive) {
-        console.log('[Readcess] Auto-dismissing break due to no response');
         this.dismissBreak();
       }
     }, this.maxBreakDuration);
     
-    const tabs = await chrome.tabs.query({
-      active: true,
-      url: ['http://*/*', 'https://*/*']
-    });
-    
-    for (const tab of tabs) {
-      try {
-        const response = await chrome.tabs.sendMessage(tab.id, { action: 'ping' })
-          .catch(() => null);
-        
-        if (response) {
+    try {
+      const tabs = await chrome.tabs.query({
+        active: true,
+        url: ['http://*/*', 'https://*/*']
+      });
+      
+      for (const tab of tabs) {
+        try {
           await chrome.tabs.sendMessage(tab.id, {
             action: 'showBreak',
             breakInterval: this.settings.breakInterval
-          }).catch(e => {
-            console.log('[Readcess] Tab not ready for messages:', tab.id);
           });
-        }
-      } catch (e) {
-        console.log('[Readcess] Tab not available:', tab.id);
+        } catch (e) {}
       }
-    }
+    } catch (e) {}
   }
 
   async dismissBreak() {
@@ -182,7 +159,6 @@ class BreakManager {
     this.breakShownTime = null;
     this.activeTime = 0;
     this.graceEndTime = Date.now() + (this.gracePeriod * 1000);
-    console.log('[Readcess] Break dismissed, grace period started for', this.gracePeriod, 'seconds');
     
     const tabs = await chrome.tabs.query({
       active: true,
@@ -210,7 +186,6 @@ class BreakManager {
   async handleBreakSnoozed() {
     this.dismissBreak();
     this.activeTime = Math.max(0, (this.settings.breakInterval * 60) - 10);
-    console.log('[Readcess] Break snoozed, next break in 10 seconds');
   }
 
   validateSettings(readingSpeed, breakInterval) {
@@ -228,6 +203,9 @@ class BreakManager {
   }
 }
 
+const backgroundManager = new BackgroundManager();
+const breakManager = new BreakManager();
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'settingsUpdated') {
     breakManager.settings = message.settings;
@@ -237,6 +215,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     breakManager.handleBreakDismissed();
   }
 });
-
-new BackgroundManager();
-const breakManager = new BreakManager(); 
