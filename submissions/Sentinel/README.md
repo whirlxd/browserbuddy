@@ -1,3 +1,5 @@
+#IMPORTANT: This extension will not work right now. It needs to be setup on the right domain for CORS and everything to work right. It also needs to be put on the web store for the extension ID to be set. Once that's done, it can be tested. Unfortunately, without the grant there is no other way to use it.
+
 # Sentinel Extension
 
 Sentinel is a browser extension designed for teachers to track tabs and manage student browsing.
