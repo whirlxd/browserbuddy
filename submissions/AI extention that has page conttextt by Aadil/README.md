@@ -15,7 +15,7 @@ browser_buddy/
     ├── popup.js               # Extension popup logic
     ├── content.js             # Page content extraction script
     └── background.js          # Background service worker
-    └── icons/                 # Extension icons
+    └── icon.png               # Extension icon
 ```
 
 ## Setup Instructions
