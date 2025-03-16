@@ -1,4 +1,4 @@
-# 🌬️ [Aerosol](https://github.com/raghav-karn/aerosol) 🚬
+# 🌬️ Aerosol 🚬
 
 ![Aerosol Icon](icon128.png)
 
