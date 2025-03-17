@@ -12,7 +12,7 @@
 - Activate it
 - Right click on any website (open context menu)
 - Click ``Activate Styling (Ctrl + click element)``
-- Hold ``ctrl`` and click the element you want to modify
+- Hold ``ctrl`` (Windows / Linux) or ``cmd`` (MacOS) and click the element you want to modify
 - Change the values and tick what should be kept
 - Click ``OK`` or ``Cancel``
 
