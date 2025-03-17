@@ -11,7 +11,7 @@
 - Or clone the repo and load it by yourself
 - Activate it
 - Right click on any website (open context menu)
-- Click ``Activate Styling (Ctrl + click element)``
+- Click ``Activate Styling``
 - Hold ``ctrl`` (Windows / Linux) or ``cmd`` (MacOS) and click the element you want to modify
 - Change the values and tick what should be kept
 - Click ``OK`` or ``Cancel``
