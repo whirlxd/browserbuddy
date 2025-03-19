@@ -8,3 +8,5 @@ Have you ever found yourself sitting on piles of random webpages, trying to cura
 - In the popup of the extension, you can have quick access to everything you've saved, summarised by AI.
 - When you save a page/note to yourself, the AI can look for important dates and alarms, and a reminder will automatically pop up at the right time, along with the title!
 - The entire extension is incredibly easy-to-use and simple, with no need to lift a finger for smart reminders and alarms, and easy access to saved pages' content.
+
+#### NOTE: AI applications of this project are powered by https://ai.hackclub.com/
