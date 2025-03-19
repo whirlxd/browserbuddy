@@ -8,10 +8,10 @@
       "default_icon": "VisualResources/guilttripper.png"
     },
     "icons": {
-      "16": "VisualResources/icons/16.png",
-      "32": "VisualResources/icons/32.png",
-      "48": "VisualResources/icons/48.png",
-      "128": "VisualResources/icons/128.png"
+      "16": "VisualResources/Icons/16.png",
+      "32": "VisualResources/Icons/32.png",
+      "48": "VisualResources/Icons/48.png",
+      "128": "VisualResources/Icons/128.png"
     },
     "permissions": [
       "tabs",
