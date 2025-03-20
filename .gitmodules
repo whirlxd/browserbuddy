@@ -1,0 +1,3 @@
+[submodule "submissions/MosaicSlicer"]
+	path = submissions/MosaicSlicer
+	url = https://github.com/ading2210/MosaicSlicer
