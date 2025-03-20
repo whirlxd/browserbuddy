@@ -33,7 +33,7 @@ h2 {
   padding-bottom: 8px;
 }
 
-#overview, #alarms, #calendar {
+#overview, #alarms, #calendar, #alarms-container {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
