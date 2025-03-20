@@ -68,10 +68,28 @@ if (!window.cursorEffectInitialized) {
     // Update the rest of the trail
     if (cursorType === 'trail') {
       for (let i = cursorElements.length - 1; i > 0; i--) {
+        // Get the previous element's transform value
+        const prevTransform = cursorElements[i - 1].style.transform;
+        // Safe parsing of coordinates
+        let prevX = 0, prevY = 0;
+        
+        if (prevTransform) {
+          const xMatch = prevTransform.match(/translate\((\d+\.?\d*)px/);
+          const yMatch = prevTransform.match(/(\d+\.?\d*)px\)/);
+          
+          if (xMatch && xMatch[1]) {
+            prevX = parseFloat(xMatch[1]) + cursorSize / 2;
+          }
+          
+          if (yMatch && yMatch[1]) {
+            prevY = parseFloat(yMatch[1]) + cursorSize / 2;
+          }
+        }
+        
         updateCursorElement(
           cursorElements[i],
-          parseFloat(cursorElements[i - 1].style.transform.match(/translate\((\d+\.?\d*)px/)[1]) + cursorSize / 2,
-          parseFloat(cursorElements[i - 1].style.transform.match(/(\d+\.?\d*)px\)/)[1]) + cursorSize / 2,
+          prevX,
+          prevY,
           i
         );
       }
