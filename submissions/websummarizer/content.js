@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     max_tokens: 300,
                     model: "command-r",
                     messages: [
-                        { role: "system", content: "You are a helpful assistant." },
+                        { role: "system", content: "You are a helpful assistant. Return in answers like an answer to a flashcard" },
                         { role: "user", content: userMessage },
                     ],
                 }),
@@ -35,23 +35,19 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!fullText) return console.error("No text found on the page.");
         const userMessage = `Based on this content: "${fullText}", answer: "${query}"`;
         const response = await generateResponse(userMessage);
-        displayResponse(query, response);
-    }
-
-    function displayResponse(query, response) {
-        let responseBox = document.getElementById("responseBox");
-        if (!responseBox) {
-            responseBox = document.createElement("div");
-            responseBox.id = "responseBox";
-            Object.assign(responseBox.style, {
-                position: "fixed", bottom: "80px", right: "20px", backgroundColor: "#f9f9f9",
-                padding: "15px", borderRadius: "8px", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                zIndex: "1000", maxWidth: "350px", maxHeight: "70vh", overflowY: "auto",
-                fontFamily: "Arial, sans-serif", fontSize: "14px", color: "#333"
-            });
-            document.body.appendChild(responseBox);
-        }
-        responseBox.innerHTML = `<div><strong>Question:</strong> ${query}<br><strong>Response:</strong> ${response}</div>`;
+        
+        // Save to flashcards with unique ID
+        chrome.storage.local.get({ flashcards: [] }, (data) => {
+            const newFlashcard = {
+                id: Date.now(),
+                question: query,
+                answer: response
+            };
+            const newFlashcards = [...data.flashcards, newFlashcard];
+            chrome.storage.local.set({ flashcards: newFlashcards });
+        });
+        
+        alert(`Flashcard saved`);
     }
 
     function createQueryInput() {
@@ -60,21 +56,37 @@ document.addEventListener("DOMContentLoaded", () => {
             inputBox = document.createElement("div");
             inputBox.id = "inputBox";
             Object.assign(inputBox.style, {
-                position: "fixed", bottom: "20px", right: "20px", backgroundColor: "#fff",
-                padding: "10px", borderRadius: "8px", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                zIndex: "1000", display: "flex", gap: "10px"
+                position: "fixed",
+                bottom: "20px",
+                right: "20px",
+                backgroundColor: "#fff",
+                padding: "10px",
+                borderRadius: "8px",
+                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                zIndex: "1000",
+                display: "flex",
+                gap: "10px"
             });
 
             const inputField = document.createElement("input");
             Object.assign(inputField.style, {
-                flex: "1", padding: "8px", border: "1px solid #ccc", borderRadius: "4px", fontSize: "14px"
+                flex: "1",
+                padding: "8px",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                fontSize: "14px"
             });
             inputField.placeholder = "Ask a question...";
 
             const submitButton = document.createElement("button");
             Object.assign(submitButton.style, {
-                padding: "8px 12px", backgroundColor: "#007bff", color: "#fff", border: "none",
-                borderRadius: "4px", cursor: "pointer", fontSize: "14px"
+                padding: "8px 12px",
+                backgroundColor: "#007bff",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "14px"
             });
             submitButton.innerText = "Ask";
             submitButton.addEventListener("click", () => {
@@ -85,8 +97,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
+            const viewButton = document.createElement("button");
+            Object.assign(viewButton.style, {
+                padding: "8px 12px",
+                backgroundColor: "#28a745",
+                color: "#fff",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer"
+            });
+            viewButton.innerText = "View Flashcards";
+            viewButton.addEventListener("click", () => {
+                window.open(chrome.runtime.getURL("popup.html"), "_blank");
+            });
+
             inputBox.appendChild(inputField);
             inputBox.appendChild(submitButton);
+            inputBox.appendChild(viewButton);
             document.body.appendChild(inputBox);
         }
     }
