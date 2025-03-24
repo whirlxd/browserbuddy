@@ -3,7 +3,7 @@
   "name": "Focus Mode",
   "version": "1.0",
   "description": "Temporarily hide distracting websites to improve focus",
-  "permissions": ["storage", "activeTab", "scripting", "webNavigation"],
+  "permissions": ["storage", "tabs", "webNavigation"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
@@ -20,11 +20,7 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_start"
-    }
+  "host_permissions": [
+    "<all_urls>"
   ]
 }
