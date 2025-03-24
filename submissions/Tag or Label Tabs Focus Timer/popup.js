@@ -1,125 +1,180 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const toggleFocusButton = document.getElementById('toggleFocus');
+  const focusToggle = document.getElementById('focusToggle');
+  const statusText = document.getElementById('statusText');
   const newSiteInput = document.getElementById('newSite');
   const addSiteButton = document.getElementById('addSite');
-  const siteListElement = document.getElementById('siteList');
-  const timerInput = document.getElementById('timer');
-  const timeRemainingElement = document.getElementById('timeRemaining');
-
-  let focusMode = false;
-  let blockedSites = [];
-  let timerEnd = 0;
-  let countdownInterval;
-
+  const blockedSitesList = document.getElementById('blockedSites');
+  const timerDuration = document.getElementById('timerDuration');
+  const timeRemaining = document.getElementById('timeRemaining');
+  
+  let intervalId = null;
+  
   // Load saved state
-  chrome.storage.local.get(['focusMode', 'blockedSites', 'timerEnd'], function(result) {
-    if (result.focusMode) {
-      focusMode = result.focusMode;
-      toggleFocusButton.textContent = 'Disable Focus Mode';
-      toggleFocusButton.classList.add('active');
+  chrome.storage.local.get(['focusMode', 'blockedSites', 'endTime'], function(data) {
+    // Set focus toggle
+    if (data.focusMode) {
+      focusToggle.checked = true;
+      statusText.textContent = 'On';
+      
+      // If there's an active timer, display it
+      if (data.endTime) {
+        const currentTime = Date.now();
+        const endTime = data.endTime;
+        
+        if (endTime > currentTime) {
+          updateTimerDisplay(endTime - currentTime);
+          startTimer(endTime);
+        } else {
+          // Timer has expired
+          turnOffFocusMode();
+        }
+      }
     }
     
-    if (result.blockedSites) {
-      blockedSites = result.blockedSites;
-      renderSiteList();
-    }
-    
-    if (result.timerEnd && result.timerEnd > Date.now()) {
-      timerEnd = result.timerEnd;
-      startCountdown();
+    // Load blocked sites
+    if (data.blockedSites && data.blockedSites.length > 0) {
+      const sites = data.blockedSites;
+      sites.forEach(site => {
+        addSiteToList(site);
+      });
+    } else {
+      // Default blocked sites
+      const defaultSites = [
+        'facebook.com',
+        'twitter.com',
+        'instagram.com',
+        'reddit.com',
+        'youtube.com'
+      ];
+      
+      chrome.storage.local.set({ blockedSites: defaultSites });
+      defaultSites.forEach(site => {
+        addSiteToList(site);
+      });
     }
   });
-
+  
   // Toggle focus mode
-  toggleFocusButton.addEventListener('click', function() {
-    focusMode = !focusMode;
-    
-    if (focusMode) {
-      toggleFocusButton.textContent = 'Disable Focus Mode';
-      toggleFocusButton.classList.add('active');
+  focusToggle.addEventListener('change', function() {
+    if (this.checked) {
+      statusText.textContent = 'On';
       
-      // Set timer if focus mode is enabled
-      const minutes = parseInt(timerInput.value) || 25;
-      timerEnd = Date.now() + minutes * 60 * 1000;
+      // Get the selected duration
+      const durationMinutes = parseInt(timerDuration.value);
+      const endTime = Date.now() + (durationMinutes * 60 * 1000);
       
-      chrome.storage.local.set({ 
+      chrome.storage.local.set({
         focusMode: true,
-        timerEnd: timerEnd
+        endTime: endTime
       });
       
-      startCountdown();
+      // Start the timer
+      startTimer(endTime);
+      
+      // Tell the background script to enable focus mode
+      chrome.runtime.sendMessage({
+        action: 'enableFocusMode'
+      });
     } else {
-      toggleFocusButton.textContent = 'Enable Focus Mode';
-      toggleFocusButton.classList.remove('active');
-      chrome.storage.local.set({ focusMode: false });
-      clearInterval(countdownInterval);
-      timeRemainingElement.textContent = '';
+      turnOffFocusMode();
     }
-    
-    chrome.runtime.sendMessage({ action: 'toggleFocusMode', focusMode: focusMode });
   });
-
+  
   // Add new site to block
   addSiteButton.addEventListener('click', function() {
-    const site = newSiteInput.value.trim().toLowerCase();
-    if (site && !blockedSites.includes(site)) {
-      blockedSites.push(site);
-      chrome.storage.local.set({ blockedSites: blockedSites });
-      newSiteInput.value = '';
-      renderSiteList();
+    const site = newSiteInput.value.trim();
+    if (site) {
+      // Add site to storage
+      chrome.storage.local.get('blockedSites', function(data) {
+        const sites = data.blockedSites || [];
+        if (!sites.includes(site)) {
+          sites.push(site);
+          chrome.storage.local.set({ blockedSites: sites });
+          addSiteToList(site);
+          newSiteInput.value = '';
+        }
+      });
     }
   });
-
-  // Render the list of blocked sites
-  function renderSiteList() {
-    siteListElement.innerHTML = '';
-    blockedSites.forEach(function(site) {
-      const siteItem = document.createElement('div');
-      siteItem.className = 'site-item';
-      
-      const siteName = document.createElement('span');
-      siteName.textContent = site;
-      
-      const removeButton = document.createElement('button');
-      removeButton.textContent = '✕';
-      removeButton.className = 'remove-site';
-      removeButton.addEventListener('click', function() {
-        blockedSites = blockedSites.filter(s => s !== site);
-        chrome.storage.local.set({ blockedSites: blockedSites });
-        renderSiteList();
-      });
-      
-      siteItem.appendChild(siteName);
-      siteItem.appendChild(removeButton);
-      siteListElement.appendChild(siteItem);
-    });
-  }
-
-  // Start countdown timer
-  function startCountdown() {
-    clearInterval(countdownInterval);
+  
+  // Enter key to add new site
+  newSiteInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      addSiteButton.click();
+    }
+  });
+  
+  // Helper function to add site to UI list
+  function addSiteToList(site) {
+    const li = document.createElement('li');
+    li.textContent = site;
     
-    function updateCountdown() {
-      const now = Date.now();
-      const timeLeft = timerEnd - now;
-      
-      if (timeLeft <= 0) {
-        clearInterval(countdownInterval);
-        timeRemainingElement.textContent = '';
-        focusMode = false;
-        toggleFocusButton.textContent = 'Enable Focus Mode';
-        toggleFocusButton.classList.remove('active');
-        chrome.storage.local.set({ focusMode: false });
-        chrome.runtime.sendMessage({ action: 'toggleFocusMode', focusMode: false });
-        return;
-      }
-      
-      const minutes = Math.floor(timeLeft / 60000);
-      const seconds = Math.floor((timeLeft % 60000) / 1000);
-      timeRemainingElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    const removeButton = document.createElement('button');
+    removeButton.textContent = 'Remove';
+    removeButton.classList.add('remove-site');
+    removeButton.addEventListener('click', function() {
+      // Remove from storage
+      chrome.storage.local.get('blockedSites', function(data) {
+        const sites = data.blockedSites || [];
+        const index = sites.indexOf(site);
+        if (index !== -1) {
+          sites.splice(index, 1);
+          chrome.storage.local.set({ blockedSites: sites });
+          li.remove();
+        }
+      });
+    });
+    
+    li.appendChild(removeButton);
+    blockedSitesList.appendChild(li);
+  }
+  
+  // Start timer
+  function startTimer(endTime) {
+    // Clear any existing interval
+    if (intervalId) {
+      clearInterval(intervalId);
     }
     
-    updateCountdown();
-    countdownInterval = setInterval(updateCountdown, 1000);
+    intervalId = setInterval(function() {
+      const currentTime = Date.now();
+      const timeLeft = endTime - currentTime;
+      
+      if (timeLeft <= 0) {
+        clearInterval(intervalId);
+        turnOffFocusMode();
+      } else {
+        updateTimerDisplay(timeLeft);
+      }
+    }, 1000);
+  }
+  
+  // Update timer display
+  function updateTimerDisplay(timeInMs) {
+    const minutes = Math.floor(timeInMs / 60000);
+    const seconds = Math.floor((timeInMs % 60000) / 1000);
+    timeRemaining.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  }
+  
+  // Turn off focus mode
+  function turnOffFocusMode() {
+    focusToggle.checked = false;
+    statusText.textContent = 'Off';
+    timeRemaining.textContent = '00:00';
+    
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+    
+    chrome.storage.local.set({
+      focusMode: false,
+      endTime: null
+    });
+    
+    // Tell the background script to disable focus mode
+    chrome.runtime.sendMessage({
+      action: 'disableFocusMode'
+    });
   }
 });
