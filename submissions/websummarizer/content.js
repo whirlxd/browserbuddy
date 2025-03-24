@@ -1,140 +1,160 @@
-const observer = new MutationObserver(async () => {
-    const fullText = extractAllText();
-    if (fullText) {
-      observer.disconnect();
-      createQueryInput();
-    }
-  });
-  
-  observer.observe(document.body, { childList: true, subtree: true });
-  
-  async function generateResponse(userMessage) {
-    try {
-      const truncatedContent = userMessage.slice(0, 5000);
-      const response = await fetch("https://api.cohere.com/v2/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer c5cR9HeLMaRjKL5TlLmCvnwrgnSj1iioQKJJ6vmd"
-        },
-        body: JSON.stringify({
-          max_tokens: 300,
-          model: "command-r",
-          messages: [
-            { 
-              role: "system", 
-              content: "You are a helpful assistant. Return answers like flashcard responses." 
-            },
-            { 
-              role: "user", 
-              content: truncatedContent 
-            }
-          ]
-        })
-      });
-      if (!response.ok) throw new Error(`API error: ${response.status}`);
-      const data = await response.json();
-      return data.message.content[0].text;
-    } catch (error) {
-      console.error("Cohere API Error:", error);
-      return "Error generating response. Check console for details.";
-    }
-  }
-  
-  function extractAllText() {
-    return document.body.innerText.replace(/[\s\n]+/g, ' ').trim();
-  }
-  
-  async function handleUserQuery(query) {
-    const fullText = extractAllText();
-    if (!fullText) return console.error("No text content detected");
-    
-    try {
-      const response = await generateResponse(
-        `Based on this content: "${fullText.slice(0, 5000)}", answer: "${query}"`
-      );
-  
-      chrome.storage.local.get({ flashcards: [] }, (data) => {
-        const newFlashcard = {
-          id: Date.now(),
-          question: query,
-          answer: response,
-          source: window.location.href
-        };
-        chrome.storage.local.set({ flashcards: [...data.flashcards, newFlashcard] });
-      });
-      
-      alert(`Flashcard saved successfully!\nQ: ${query}\nA: ${response.slice(0, 100)}...`);
-    } catch (error) {
-      console.error("Processing Error:", error);
-      alert("Failed to save flashcard. Check console for details.");
-    }
-  }
-  
-  function createQueryInput() {
-    const existingInput = document.getElementById("flashcard-input-container");
-    if (existingInput) return;
-  
-    const container = document.createElement("div");
-    container.id = "flashcard-input-container";
-    Object.assign(container.style, {
-      position: "fixed",
-      bottom: "20px",
-      right: "20px",
-      backgroundColor: "#ffffff",
-      padding: "15px",
-      borderRadius: "10px",
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.15)",
-      zIndex: "2147483647",
-      display: "flex",
-      flexDirection: "column",
-      gap: "10px",
-      minWidth: "300px"
+let hasInitialized = false;
+const observer = new MutationObserver(checkForContent);
+
+function startObservation() {
+  if (!hasInitialized) {
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+      attributes: true
     });
+  }
+}
+
+async function checkForContent() {
+  const fullText = extractAllText();
+  if (fullText.length > 100 && !hasInitialized) {
+    hasInitialized = true;
+    createQueryInput();
+    observer.takeRecords();
+  }
+}
+
+function extractAllText() {
+  const article = document.querySelector('.post-content') || 
+                 document.querySelector('article') || 
+                 document.body;
   
-    const inputField = document.createElement("input");
-    Object.assign(inputField.style, {
-      padding: "10px",
-      border: "1px solid #cccccc",
-      borderRadius: "5px",
-      fontSize: "14px"
-    });
-    inputField.placeholder = "Enter your question...";
-  
-    const buttonContainer = document.createElement("div");
-    buttonContainer.style.display = "flex";
-    buttonContainer.style.gap = "8px";
-  
-    const submitButton = createButton("Ask", "#007bff", () => {
-      const query = inputField.value.trim();
-      if (query) handleUserQuery(query);
-      inputField.value = "";
+  return article.innerText
+    .replace(/\s+/g, ' ')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .trim();
+}
+
+function createQueryInput() {
+  if (document.getElementById('flashcard-input-container')) return;
+
+  const container = document.createElement('div');
+  container.id = 'flashcard-input-container';
+  const shadow = container.attachShadow({ mode: 'open' });
+
+  const style = document.createElement('style');
+  style.textContent = `
+    :host {
+      position: fixed !important;
+      bottom: 20px !important;
+      right: 20px !important;
+      z-index: 2147483647 !important;
+      background: white !important;
+      padding: 15px !important;
+      border-radius: 10px !important;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15) !important;
+      min-width: 300px !important;
+    }
+    input {
+      padding: 10px !important;
+      border: 1px solid #ccc !important;
+      border-radius: 5px !important;
+      width: 100% !important;
+      margin-bottom: 10px !important;
+    }
+    button {
+      padding: 8px 12px !important;
+      border: none !important;
+      border-radius: 5px !important;
+      cursor: pointer !important;
+      flex: 1 !important;
+    }
+  `;
+
+  const inputField = document.createElement('input');
+  inputField.placeholder = 'Enter your question...';
+
+  const buttonContainer = document.createElement('div');
+  buttonContainer.style.display = 'flex';
+  buttonContainer.style.gap = '8px';
+
+  const submitButton = document.createElement('button');
+  submitButton.textContent = 'Ask';
+  submitButton.style.backgroundColor = '#007bff';
+  submitButton.style.color = 'white';
+  submitButton.onclick = async () => {
+    const query = inputField.value.trim();
+    if (query) await handleUserQuery(query);
+    inputField.value = '';
+  };
+
+  const viewButton = document.createElement('button');
+  viewButton.textContent = 'View Cards';
+  viewButton.style.backgroundColor = '#28a745';
+  viewButton.style.color = 'white';
+  viewButton.onclick = () => window.open(chrome.runtime.getURL('popup.html'), '_blank');
+
+  buttonContainer.append(submitButton, viewButton);
+  shadow.append(style, inputField, buttonContainer);
+  document.body.appendChild(container);
+}
+
+async function handleUserQuery(query) {
+  try {
+    const fullText = extractAllText().slice(0, 5000);
+    const response = await fetch("https://api.cohere.com/v2/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer ZfZOfBjMo21gD3vvU14Bl0aLN9EDU6dMqZYrhCtz"
+      },
+      body: JSON.stringify({
+        max_tokens: 300,
+        model: "command-r",
+        messages: [
+          { 
+            role: "system", 
+            content: "You are a helpful assistant. Return answers like flashcard responses. Return answers in a couple of sentences, not questions and answers." 
+          },
+          { 
+            role: "user", 
+            content: `Based on this content: "${fullText}", answer: "${query}"`
+          }
+        ]
+      })
     });
 
+    if (!response.ok) throw new Error(`API error: ${response.status}`);
+    const data = await response.json();
+    const answer = data.message.content[0].text;
 
-    const viewButton = createButton("View Flashcards", "#28a745", () => {
-    window.open(chrome.runtime.getURL('popup.html'), '_blank');
-  });
-  
-    buttonContainer.appendChild(submitButton);
-    buttonContainer.appendChild(viewButton);
-    container.appendChild(inputField);
-    container.appendChild(buttonContainer);
-    document.documentElement.appendChild(container);
-  }
-  
-  function createButton(text, color, onClick) {
-    const button = document.createElement("button");
-    Object.assign(button.style, {
-      padding: "8px 12px",
-      backgroundColor: color,
-      color: "#ffffff",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      flex: "1"
+    if (!chrome?.storage?.local) {
+      alert("Storage API unavailable - Check extension permissions");
+      return;
+    }
+
+    chrome.storage.local.get({ flashcards: [] }, (data) => {
+      const newFlashcard = {
+        id: Date.now(),
+        question: query,
+        answer: answer,
+        source: window.location.href
+      };
+      chrome.storage.local.set({ flashcards: [...data.flashcards, newFlashcard] }, () => {
+        if (chrome.runtime.lastError) {
+          console.error("Storage error:", chrome.runtime.lastError);
+          alert("Failed to save flashcard. Check console for details.");
+          return;
+        }
+        alert(`Flashcard saved!\nQ: ${query}\nA: ${answer.slice(0, 100)}...`);
+      });
     });
-    button.textContent = text;
-    button.addEventListener("click", onClick);
-    return button;
+
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Failed to save. Check console for details.");
   }
+}
+
+document.addEventListener('DOMContentLoaded', startObservation);
+window.addEventListener('load', startObservation);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) checkForContent();
+});
