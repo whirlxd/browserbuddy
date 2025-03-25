@@ -152,8 +152,10 @@ async function handleUserQuery(query) {
     alert("Failed to save. Check console for details.");
   }
 }
-
-document.addEventListener('DOMContentLoaded', startObservation);
+document.addEventListener('DOMContentLoaded', () => {
+  startObservation();
+  checkForContent(); // Check for content on page load since DOMContentLoaded may not be triggered
+});
 window.addEventListener('load', startObservation);
 document.addEventListener('visibilitychange', () => {
   if (!document.hidden) checkForContent();
